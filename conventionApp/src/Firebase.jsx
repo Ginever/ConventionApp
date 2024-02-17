@@ -1,6 +1,7 @@
 import { initializeApp  } from "firebase/app";
 import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword  } from "firebase/auth";
-import { doc, setDoc, getFirestore } from "firebase/firestore"; 
+import { doc, setDoc, getDoc, getFirestore } from "firebase/firestore"; 
+import { userDataConverter } from './UserData'
 
 // Your web app's Firebase configuration
 const firebaseConfig = {
@@ -48,8 +49,8 @@ function createUser(email, password) {
     });
 }
 
-function autoLogIn(){
-    signInWithEmailAndPassword(auth, "zacginever@outlook.com", "testing")
+async function autoLogIn(){
+    await signInWithEmailAndPassword(auth, "zacginever@outlook.com", "testing")
     .then((userCredential) => {
         // Signed in 
         user = userCredential.user;
@@ -62,13 +63,23 @@ function autoLogIn(){
     });
 }
 
-const writeUserData = function(name, convention, email){
+function writeUserData(firstName, lastName, email){
     setDoc(doc(db, 'users/' + user.uid), {
-        name: name,
+        firstName: firstName,
+        lastName: lastName,
         email: email,
-        convention: convention,
       });
 }
-autoLogIn();
 
-export { writeUserData };
+async function readRegistrationData(){
+    const docSnap = await getDoc(doc(db, 'users/', user.uid).withConverter(userDataConverter));
+
+    if (docSnap.exists()){
+        return docSnap.data();
+    } else {
+        console.log("Firestore document not found");
+    }
+} 
+await autoLogIn();
+
+export { writeUserData, readRegistrationData};
