@@ -1,18 +1,28 @@
 import React, { useState } from 'react'
-import { writeUserData, readRegistrationData } from './Firebase'
+import { writeUserData, readRegistrationData, autoLogIn } from './Firebase'
 import './RegistrationForm.css'
 
-//load firestore data
-const data = await readRegistrationData();
 
 class RegistrationForm extends React.Component {
     constructor(props) {
         super(props);
 
-        this.state = data;
+        this.state = {
+            firstName: "",
+            lastName: "",
+            email: ""
+        };      
 
         this.handleChange = this.handleChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
+    }
+
+    componentDidMount(){
+        ;(async () => {
+            await autoLogIn();
+            this.setState(this.state = await readRegistrationData());
+            console.log(this.state);
+          })()
     }
 
     handleChange(event) {

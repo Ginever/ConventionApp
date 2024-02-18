@@ -79,7 +79,6 @@ async function readRegistrationData(){
     } else {
         console.log("Firestore document not found");
     }
-} 
-await autoLogIn();
+}
 
-export { writeUserData, readRegistrationData};
+export { writeUserData, readRegistrationData, autoLogIn};
