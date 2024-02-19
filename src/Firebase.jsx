@@ -81,4 +81,8 @@ async function readRegistrationData(){
     }
 }
 
-export { writeUserData, readRegistrationData, autoLogIn};
+function isUserAuthed(){
+    return user == null ? false : !user.isAnonymous
+}
+
+export { writeUserData, readRegistrationData, autoLogIn, isUserAuthed};
