@@ -1,0 +1,6 @@
+.input-container{
+    flex-direction: row;
+}
+.input-field{
+    flex: 1
+}
