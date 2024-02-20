@@ -7,12 +7,10 @@ import Typography from '@mui/material/Typography';
 import Menu from '@mui/material/Menu';
 import MenuIcon from '@mui/icons-material/Menu';
 import Container from '@mui/material/Container';
-import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
-import AdbIcon from '@mui/icons-material/Adb';
-import AccountCircle from '@mui/icons-material/AccountCircle';
+import AccountCircleIcon from '@mui/icons-material/esm/AccountCircle.js';
 import { isUserAuthed } from '../Firebase';
 
 
@@ -136,7 +134,7 @@ function ResponsiveAppBar() {
                 onClick={handleOpenUserMenu}
                 color="inherit"
               >
-                <AccountCircle />
+                <AccountCircleIcon />
               </IconButton>
             </Tooltip>
             <Menu

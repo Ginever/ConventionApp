@@ -11,7 +11,8 @@ const userDataConverter = {
         return {
             firstName: userData.firstName,
             lastName: userData.lastName,
-            email: userData.email
+            email: userData.email,
+            conventions: userData.Conventions
         }
     },
     fromFirestore: (snapshot, options) => {
@@ -19,7 +20,8 @@ const userDataConverter = {
         return {
             firstName: data.firstName,
             lastName: data.lastName, 
-            email: data.email
+            email: data.email,
+            conventions: data.Conventions
             };
     }
 }

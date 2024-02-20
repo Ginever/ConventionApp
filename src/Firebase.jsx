@@ -54,7 +54,6 @@ async function autoLogIn(){
     .then((userCredential) => {
         // Signed in 
         user = userCredential.user;
-        console.log(user);
         // ...
     })
     .catch((error) => {
