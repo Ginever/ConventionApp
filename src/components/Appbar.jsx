@@ -11,7 +11,7 @@ import Button from '@mui/material/Button';
 import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
 import AccountCircleIcon from '@mui/icons-material/esm/AccountCircle.js';
-import { isUserAuthed } from '../Firebase';
+import { isUserAuthed } from '../utils/Firebase';
 
 
 const pages = ['Register', 'Log In/Sign up'];

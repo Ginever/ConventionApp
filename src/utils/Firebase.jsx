@@ -1,7 +1,7 @@
 import { initializeApp  } from "firebase/app";
 import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword  } from "firebase/auth";
 import { doc, setDoc, getDoc, getFirestore } from "firebase/firestore"; 
-import { userDataConverter } from './UserData'
+import { userDataConverter } from './data'
 
 // Your web app's Firebase configuration
 const firebaseConfig = {
@@ -51,6 +51,7 @@ function createUser(email, password) {
 
 async function autoLogIn(){
     await signInWithEmailAndPassword(auth, "zacginever@outlook.com", "testing")
+    //await signInWithEmailAndPassword(auth, "potato@potato.com", "helloworld")
     .then((userCredential) => {
         // Signed in 
         user = userCredential.user;
