@@ -9,10 +9,13 @@ import Grid from '@mui/material/Unstable_Grid2';
 import { red } from '@mui/material/colors';
 import { Tooltip } from '@mui/material';
 import Divider from '@mui/material/Divider';
+import { useSelector } from 'react-redux';
+import { selectPeople } from '../features/userData/userDataSlice';
 
 
 
-export default function PersonForm() {
+export default function PersonForm({uuid}) {
+    const person = useSelector(selectPeople)[uuid];
     const [isSelected, setIsSelected] = React.useState('');
 
     function handleClick() {
@@ -26,7 +29,7 @@ export default function PersonForm() {
                 <Grid container onClick={handleClick}>
                     <Grid>
                         <Typography sx={{ margin: "10px", fontSize: "40px"}}>
-                            Zac Ginever
+                            {person.firstName} {person.lastName}
                         </Typography>
                     </Grid>
                     <Grid sx={{marginLeft: "auto", display: 'flex', alignItems: 'center'}}>

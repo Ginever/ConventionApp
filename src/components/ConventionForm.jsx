@@ -10,23 +10,21 @@ import PersonForm from './PersonForm';
 import FullWidthAdd from './FullWidthAdd';
 import { getConventionData } from '../utils/data';
 import { TempleBuddhist } from '@mui/icons-material';
+import { useDispatch, useSelector } from 'react-redux';
+import { handleDateSelectorToggles, selectConventionData } from '../features/userData/userDataSlice';
 
 
 const conventionDays = ["Thursday", "Friday", "Saturday", "Sunday", "Monday"]
 
 export default function ConventionForm({index}) {
-    const {height, width} = useWindowDimensions();
-    const [conventionData, setConventionData] = React.useState({});
+    const dispatch = useDispatch();
+    const conventionData = useSelector(selectConventionData)[index];
 
-    React.useEffect(() => {
-        getConventionData(index).then(data => setConventionData(data));
-    }, [])
+    const {height, width} = useWindowDimensions();
+    
 
     const handleToggleButton = (event, newToggles) => {
-        var temp = conventionData;
-        temp.daysAttending = newToggles
-        setConventionData(temp);
-        console.log(conventionData);
+        dispatch(handleDateSelectorToggles({index: index, daysAttending: newToggles}))
     }
 
     return (
@@ -56,9 +54,12 @@ export default function ConventionForm({index}) {
             <Grid item xs={12}>
                 <Typography sx={{width: "min-width", float: "left", height: 'max-height', textAlign: "left", marginRight: "auto", fontSize: "20px"}}>Who is attending Convention:</Typography>
             </Grid>
-            <Grid item xs={12}>
-                <PersonForm />
-            </Grid>
+            
+            {conventionData.people.map((person) => (
+                <Grid item key={person} xs={12}>
+                    <PersonForm uuid={person}/>
+                </Grid>
+            ))}
             <Grid item xs={12}>
                 <FullWidthAdd />
             </Grid>

@@ -1,5 +1,4 @@
 import * as React from 'react';
-import Async from "react-async"
 import Box from '@mui/system/Box';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import Typography from '@mui/material/Typography';
@@ -13,17 +12,16 @@ import Divider from '@mui/material/Divider';
 import ConventionForm from './ConventionForm';
 import FullWidthAdd from './FullWidthAdd';
 import { getConventionName } from '../utils/data';
+import { useSelector } from 'react-redux';
+import { selectConventionData } from '../features/userData/userDataSlice';
 
 export default function ConventionWidget({index}) {
+    const conventionName = useSelector(selectConventionData)[index].name;
     const [isSelected, setIsSelected] = React.useState('');
-    const [conventionName, setConventionName] = React.useState('');
+
     function handleClick() {
         setIsSelected(!isSelected);
     }
-
-    React.useEffect(() => {
-        getConventionName(index).then(data => setConventionName(data));
-    }, [])
 
     return (
         <ThemeProvider
