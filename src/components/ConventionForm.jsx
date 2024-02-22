@@ -9,8 +9,10 @@ import Divider from '@mui/material/Divider';
 import PersonForm from './PersonForm';
 import FullWidthAdd from './FullWidthAdd';
 import { useDispatch, useSelector } from 'react-redux';
-import { addNewPerson, handleDateSelectorToggles, selectConventionData, selectPeople } from '../features/userData/userDataSlice';
-import { Button, ButtonGroup, Modal } from '@mui/material';
+import { addNewPerson, createNewPerson, deletePerson, handleDateSelectorToggles, selectConventionData, selectPeople } from '../features/userData/userDataSlice';
+import { Button, ButtonGroup, IconButton, Modal } from '@mui/material';
+import DeleteIcon from '@mui/icons-material/Delete';
+
 
 const style = {
     position: 'absolute',
@@ -81,7 +83,7 @@ export default function ConventionForm({index}) {
                 </Grid>
             ))}
             <Grid item xs={12}>
-                <FullWidthAdd disabled={Object.keys(people).length == conventionData.people.length} tooltip="Add new person" onClick={() => handleOpen()}/>
+                <FullWidthAdd tooltip="Add new person" onClick={() => handleOpen()}/>
             </Grid>
         </Grid>
 
@@ -100,17 +102,21 @@ export default function ConventionForm({index}) {
             {Object.keys(people).map((person) => (
                 (conventionData.people.find(o => o.uuid === person) != null) ? null : 
                 <Button 
-                onClick={() => {
-                    dispatch(addNewPerson({conventionIndex: index, uuid: person})); 
-                    handleClose();}}
-                    key={people} 
-                    name={people} 
-                    xs={12} 
-                    width={1}>
+                    onClick={() => {
+                        dispatch(addNewPerson({conventionIndex: index, uuid: person})); 
+                        handleClose();}}
+                        key={people} 
+                        name={people} 
+                        xs={12} 
+                        width={1}
+                    endIcon={<DeleteIcon onClick={() => {console.log("Clicked"); dispatch(deletePerson(uuid));}}/>} 
+                >
                 {people[person].firstName} {people[person].lastName}
                 </Button>
             ))}
-            
+            <Button onClick={() => {dispatch(createNewPerson(index)); handleClose()}}>
+                Add New
+            </Button>
             </ButtonGroup>
             </Box>
         </Modal>
@@ -119,8 +125,9 @@ export default function ConventionForm({index}) {
     )
 }
 
-
-
+const DeleteIconButton = ({uuid}) => {
+    return (<DeleteIcon onClick={() => {console.log("Clicked"); dispatch(deletePerson(uuid));}}/>);
+}
 
 const IconTextField = ({ tooltip, InputProps, ...props }) => {
     return (

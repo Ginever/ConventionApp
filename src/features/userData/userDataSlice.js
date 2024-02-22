@@ -4,7 +4,8 @@ import { v4 as uuidv4 } from 'uuid';
 
 const initialState = {
     conventions: [],
-    people: []
+    people: [],
+    elderName: "",
 }
 
 export const updateDataAsync = () => {
@@ -26,6 +27,7 @@ export const userDataSlice = createSlice({
         dataLoaded: (state, action) => {
             state.conventions = action.payload.conventions;
             state.people = action.payload.people;
+            state.elderName = action.payload.elderName;
         },
         handleDateSelectorToggles: (state, action) => {
             state.conventions[action.payload.index].daysAttending = action.payload.daysAttending;
@@ -35,6 +37,9 @@ export const userDataSlice = createSlice({
         },
         updatePerson: (state, action) => {
             state.conventions[action.payload.conventionIndex].people[action.payload.personIndex][action.payload.field] = action.payload.change;
+        }, 
+        setElderName: (state, action) => {
+            state.elderName = action.payload;
         },
         createNewPerson: (state, action) => {
             const uuid = uuidv4();
@@ -44,7 +49,7 @@ export const userDataSlice = createSlice({
                 lastName: "",
                 gender: ""
             }
-            state.conventions[action.payload.conventionIndex].people.push({
+            state.conventions[action.payload].people.push({
                 accommodation: "",
                 job: "",
                 uuid: uuid
@@ -69,7 +74,24 @@ export const userDataSlice = createSlice({
         },
         removeConvention: (state, action) => {
             state.conventions.splice(action.payload,1);
-        }
+        },
+        deletePerson: (state, action) => {
+
+            //Remove the deleted person from all conventions
+            var obj = [];
+            state.conventions.forEach((element, index) => element.people.forEach((e, i) => { 
+                if (e.uuid == action.payload) {
+                    obj.push({
+                        conventionIndex: index, 
+                        personIndex: i
+                    })
+                }
+            }))
+            obj.forEach((element) => state.conventions[element.conventionIndex].people.splice(element.personIndex, 1));
+            
+            //delete person for people
+            delete state.people[action.payload];
+        },
     }
 })
 
@@ -78,14 +100,17 @@ export const {
     handleDateSelectorToggles, 
     updateGlobalPerson, 
     updatePerson, 
+    setElderName,
     addNewPerson,
     createNewPerson,
     addNewConvention,
     removePerson,
-    removeConvention
+    removeConvention,
+    deletePerson
 } = userDataSlice.actions;
 
 export const selectConventionData = state => state.userData.conventions;
 export const selectPeople = state => state.userData.people;
+export const selectElder = state => state.userData.elderName
 
 export default userDataSlice.reducer;

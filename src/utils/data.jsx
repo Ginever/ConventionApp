@@ -41,14 +41,16 @@ const userDataConverter = {
     toFirestore: (userData) => {
         return {
             conventions: userData.Conventions,
-            people: userData.people
+            people: userData.people,
+            elderName: userData.elderName
         }
     },
     fromFirestore: (snapshot, options) => {
         const data = snapshot.data(options);
         return {
             conventions: data.conventions,
-            people: data.people
+            people: data.people,
+            elderName: data.elderName
             };
     }
 }

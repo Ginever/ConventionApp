@@ -8,9 +8,11 @@ import ConventionWidget from './components/ConventionWidget'
 import FullWidthAdd from './components/FullWidthAdd';
 import Grid from "@mui/material/Grid";
 import { useDispatch, useSelector } from 'react-redux';
-import { updateDataAsync, selectConventionData, selectPeople, addNewConvention } from './features/userData/userDataSlice'
-import { Box, Button, ButtonGroup, Modal, Typography } from '@mui/material';
+import { updateDataAsync, selectConventionData, selectPeople, addNewConvention, selectElder, setElderName } from './features/userData/userDataSlice'
+import { Box, Button, ButtonGroup, IconButton, InputAdornment, Modal, TextField, Tooltip, Typography } from '@mui/material';
 import { v4 as uuidv4 } from 'uuid';
+import HelpOutlineOutlinedIcon from '@mui/icons-material/HelpOutlineOutlined';
+
 
 
 const style = {
@@ -37,6 +39,7 @@ const conventions = [
 function App() {
   const conventionData = useSelector(selectConventionData);
   const people = useSelector(selectPeople);
+  const elderName = useSelector(selectElder);
   const dispatch = useDispatch();
 
   const [open, setOpen] = React.useState(false); //For the conventionSelect modal
@@ -62,6 +65,19 @@ function App() {
       <ResponsiveAppBar />
       <h1>Convention form</h1>
       <Grid container spacing={2} padding="0px 2.5%">
+        <Grid item xs={12}>
+        <IconTextField 
+            tooltip="Enter you Elders Full name. This allows us to contact you though your elder should we need to" 
+            fullWidth 
+            label="Elders Name"
+            name="eldersName"
+            variant="outlined" 
+            id="eldersName" 
+            value={elderName} 
+            onChange={(e) => dispatch(setElderName(e.target.value))} 
+        />
+        </Grid>
+        <h2 style={{margin: "20px 1% 0px"}}>Convention's Attending: </h2>
         {conventionData.map((convention) => (
           <Grid key={convention.name} item xs={12}>
             <ConventionWidget index={conventionData.indexOf(convention)}/>
@@ -101,6 +117,30 @@ function App() {
     ) : (
       <SignUp />
     )
+}
+
+const IconTextField = ({ tooltip, InputProps, ...props }) => {
+  return (
+    <TextField
+      {...props}
+      InputProps={{
+        ...InputProps,
+        endAdornment: (
+          <InputAdornment position="end"><HelpIcon helpText={tooltip} margin={props.margin} /></InputAdornment>
+        ) 
+      }}
+    />
+  );
+};
+
+const HelpIcon = ({helpText, margin}) => {
+  return (
+      <Tooltip title={helpText} enterTouchDelay={0}> 
+      <IconButton style={{margin: margin}}> 
+          <HelpOutlineOutlinedIcon />
+      </IconButton> 
+      </Tooltip>
+  );
 }
 
 export default App
