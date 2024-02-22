@@ -40,10 +40,8 @@ async function getNewData(){
 const userDataConverter = {
     toFirestore: (userData) => {
         return {
-            firstName: userData.firstName,
-            lastName: userData.lastName,
-            email: userData.email,
-            conventions: userData.Conventions
+            conventions: userData.Conventions,
+            people: userData.people
         }
     },
     fromFirestore: (snapshot, options) => {

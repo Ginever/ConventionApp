@@ -1,7 +1,7 @@
 import { initializeApp  } from "firebase/app";
 import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword  } from "firebase/auth";
 import { doc, setDoc, getDoc, getFirestore } from "firebase/firestore"; 
-import { userDataConverter } from './data'
+import { userDataConverter } from './UserData'
 
 // Your web app's Firebase configuration
 const firebaseConfig = {
@@ -26,6 +26,7 @@ function logInUser(email, password){
     .then((userCredential) => {
         // Signed in 
         user = userCredential.user;
+        console.log(user);
         // ...
     })
     .catch((error) => {
@@ -50,10 +51,10 @@ function createUser(email, password) {
 
 async function autoLogIn(){
     await signInWithEmailAndPassword(auth, "zacginever@outlook.com", "testing")
-    //await signInWithEmailAndPassword(auth, "potato@potato.com", "helloworld")
     .then((userCredential) => {
         // Signed in 
         user = userCredential.user;
+        console.log(user);
         // ...
     })
     .catch((error) => {
@@ -62,12 +63,11 @@ async function autoLogIn(){
     });
 }
 
-function writeUserData(conventions, people){
-    console.log(conventions);
-    console.log(people);
+function writeUserData(firstName, lastName, email){
     setDoc(doc(db, 'users/' + user.uid), {
-        conventions: conventions,
-        people: people,
+        firstName: firstName,
+        lastName: lastName,
+        email: email,
       });
 }
 
@@ -81,8 +81,4 @@ async function readRegistrationData(){
     }
 }
 
-function isUserAuthed(){
-    return user == null ? false : !user.isAnonymous
-}
-
-export { writeUserData, readRegistrationData, autoLogIn, isUserAuthed};
+export { writeUserData, readRegistrationData, autoLogIn};

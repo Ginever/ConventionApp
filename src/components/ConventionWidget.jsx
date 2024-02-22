@@ -7,17 +7,16 @@ import ArrowDropUpIcon from '@mui/icons-material/ArrowDropUp';
 import DeleteIcon from '@mui/icons-material/Delete';
 import Grid from '@mui/material/Unstable_Grid2';
 import { red } from '@mui/material/colors';
-import { Tooltip } from '@mui/material';
+import { IconButton, Tooltip } from '@mui/material';
 import Divider from '@mui/material/Divider';
 import ConventionForm from './ConventionForm';
-import FullWidthAdd from './FullWidthAdd';
-import { getConventionName } from '../utils/data';
-import { useSelector } from 'react-redux';
-import { selectConventionData } from '../features/userData/userDataSlice';
+import { useDispatch, useSelector } from 'react-redux';
+import { removeConvention, selectConventionData } from '../features/userData/userDataSlice';
 
 export default function ConventionWidget({index}) {
+    const dispatch = useDispatch();
     const conventionName = useSelector(selectConventionData)[index].name;
-    const [isSelected, setIsSelected] = React.useState('');
+    const [isSelected, setIsSelected] = React.useState(false);
 
     function handleClick() {
         setIsSelected(!isSelected);
@@ -29,12 +28,16 @@ export default function ConventionWidget({index}) {
             <Box sx={{ border: 1, borderRadius: '5px', width: "max-width", height: "min-height"}}>
                 <Grid container onClick={handleClick}>
                     <Grid>
-                        <Typography sx={{ margin: "10px", fontSize: "40px"}}>
-                            {conventionName}
+                        <Typography sx={{ margin: "10px 20px", fontSize: "45px"}}>
+                            <b>{conventionName}</b>
                         </Typography>
                     </Grid>
                     <Grid sx={{marginLeft: "auto", display: 'flex', alignItems: 'center'}}>
-                        <DeleteIcon sx={{ color: red[500]}} />
+                        <Tooltip title="Delete Convention">
+                            <IconButton onClick={() => dispatch(removeConvention(index))}>
+                                <DeleteIcon sx={{ color: red[500]}} />
+                            </IconButton>
+                        </Tooltip>
                     </Grid>
                     <Grid sx={{marginRight: "10px", display: 'flex', alignItems: 'center'}}>
                         
