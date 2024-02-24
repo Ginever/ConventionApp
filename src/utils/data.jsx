@@ -1,4 +1,4 @@
-import { autoLogIn, isUserAuthed, readRegistrationData } from "./Firebase";
+import { readRegistrationData } from "./Firebase";
 
 var data = null;
 
@@ -6,7 +6,7 @@ function getConventionName(index){
     console.log(data.conventions[index].name);
     return new Promise((resolve) => {
         setTimeout(() => {
-          resolve(//data == null ? getNewData()['conventions'][index] : 
+          resolve(
              data.conventions[index].name)
         }, 1500)
       })

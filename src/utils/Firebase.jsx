@@ -1,5 +1,4 @@
 import { initializeApp  } from "firebase/app";
-import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword  } from "firebase/auth";
 import { doc, setDoc, getDoc, getFirestore } from "firebase/firestore"; 
 import { userDataConverter } from './data'
 
@@ -12,55 +11,13 @@ const firebaseConfig = {
     storageBucket: "conventionapp-b0c29.appspot.com",
     messagingSenderId: "98324564320",
     appId: "1:98324564320:web:5d666e37ed9c3fd6393605",
-  };
+};
   
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
-const auth = getAuth();
 
 var user = null;
-
-function logInUser(email, password){
-    signInWithEmailAndPassword(auth, email, password)
-    .then((userCredential) => {
-        // Signed in 
-        user = userCredential.user;
-        // ...
-    })
-    .catch((error) => {
-        const errorCode = error.code;
-        const errorMessage = error.message;
-    });
-}
-
-function createUser(email, password) {
-    createUserWithEmailAndPassword(auth, email, password)
-    .then((userCredential) => {
-        // Signed up 
-        user = userCredential.user;
-        // ...
-    })
-    .catch((error) => {
-        const errorCode = error.code;
-        const errorMessage = error.message;
-        // ..
-    });
-}
-
-async function autoLogIn(){
-    await signInWithEmailAndPassword(auth, "zacginever@outlook.com", "testing")
-    //await signInWithEmailAndPassword(auth, "potato@potato.com", "helloworld")
-    .then((userCredential) => {
-        // Signed in 
-        user = userCredential.user;
-        // ...
-    })
-    .catch((error) => {
-        const errorCode = error.code;
-        const errorMessage = error.message;
-    });
-}
 
 function writeUserData(conventions, people){
     console.log(conventions);
@@ -71,8 +28,8 @@ function writeUserData(conventions, people){
       });
 }
 
-async function readRegistrationData(){
-    const docSnap = await getDoc(doc(db, 'users/', user.uid).withConverter(userDataConverter));
+async function readRegistrationData(uid){
+    const docSnap = await getDoc(doc(db, 'users/', uid).withConverter(userDataConverter));
 
     if (docSnap.exists()){
         return docSnap.data();
@@ -81,8 +38,4 @@ async function readRegistrationData(){
     }
 }
 
-function isUserAuthed(){
-    return user == null ? false : !user.isAnonymous
-}
-
-export { writeUserData, readRegistrationData, autoLogIn, isUserAuthed};
+export { writeUserData, readRegistrationData };

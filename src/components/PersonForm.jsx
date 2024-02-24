@@ -42,7 +42,7 @@ export default function PersonForm({uuid, conventionIndex, personIndex}) {
         setIsSelected(!isSelected);
     }
 
-    const handleGlobalChange = event => {    
+    const handleGlobalChange = event => { 
         dispatch(updateGlobalPerson({uuid: uuid, field: event.target.name, change: event.target.value}))
     }
 
@@ -91,7 +91,7 @@ export default function PersonForm({uuid, conventionIndex, personIndex}) {
                                 name="firstName"
                                 variant="outlined" 
                                 id="firstName" 
-                                value={person.firstName} 
+                                value={person.firstName ?? ""} 
                                 onChange={(e) => handleGlobalChange(e)} 
                             />
                         </Grid>
@@ -104,7 +104,7 @@ export default function PersonForm({uuid, conventionIndex, personIndex}) {
                                 name="lastName" 
                                 label="Last Name" 
                                 variant="outlined" 
-                                value={person.lastName} 
+                                value={person.lastName ?? ""} 
                                 onChange={(e) => handleGlobalChange(e)}
                             />
                         </Grid>
@@ -117,7 +117,7 @@ export default function PersonForm({uuid, conventionIndex, personIndex}) {
                                 name="age" 
                                 label="Age" 
                                 variant="outlined" 
-                                value={person.age} 
+                                value={person.age  ?? ""} 
                                 onChange={(e) => handleGlobalChange(e)}
                             />
                         </Grid>
@@ -129,7 +129,7 @@ export default function PersonForm({uuid, conventionIndex, personIndex}) {
                                     labelId="gender-selector-label"
                                     id="gender-selector"
                                     name="gender"
-                                    value={person.gender}
+                                    value={person.gender  ?? ""}
                                     label="Gender"
                                     onChange={(e) => handleGlobalChange(e)}
                                 >
@@ -148,7 +148,7 @@ export default function PersonForm({uuid, conventionIndex, personIndex}) {
                                     labelId="job-selector-label"
                                     id="job-selector"
                                     name="job"
-                                    value={personData.job}
+                                    value={personData.job  ?? ""}
                                     label="Preferred Job"
                                     onChange={(e) => handleChange(e)}
                                 >
@@ -167,7 +167,7 @@ export default function PersonForm({uuid, conventionIndex, personIndex}) {
                                     labelId="accommodation-selector-label"
                                     id="accommodation-selector"
                                     name="accommodation"
-                                    value={personData.accommodation}
+                                    value={personData.accommodation  ?? ""}
                                     label="Accommodation"
                                     onChange={(e) => handleChange(e)}
                                 >

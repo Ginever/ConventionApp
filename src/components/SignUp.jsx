@@ -10,13 +10,18 @@ import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
+import { Backdrop, CircularProgress } from '@mui/material';
+import { useDispatch } from 'react-redux';
+import { setUid, updateDataAsync } from '../features/userData/userDataSlice';
+import { useNavigate } from 'react-router-dom';
+import { createUserWithEmailAndPassword, getAuth } from 'firebase/auth';
 
 function Copyright(props) {
   return (
     <Typography variant="body2" color="text.secondary" align="center" {...props}>
       {'Copyright © '}
       <Link color="inherit" href="https://mui.com/">
-        Your Website
+        Zac Ginever
       </Link>{' '}
       {new Date().getFullYear()}
       {'.'}
@@ -29,12 +34,22 @@ function Copyright(props) {
 const defaultTheme = createTheme();
 
 export default function SignUp() {
-  const handleSubmit = (event) => {
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const auth = getAuth();
+
+  const [open, setOpen] = React.useState(false);
+
+  const handleSubmit = async event => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
-    console.log({
-      email: data.get('email'),
-      password: data.get('password'),
+    setOpen(true);
+    createUserWithEmailAndPassword(auth, data.get('email'), data.get('password')).then((value) => {
+      setUid(value.user.uid);
+      navigate('/ConventionApp');
+    }).catch((err) => {
+      console.log(err);
+      setOpen(false);
     });
   };
 
@@ -101,7 +116,7 @@ export default function SignUp() {
                 />
               </Grid>
             </Grid>
-            </Box>
+            
             <Button
               type="submit"
               fullWidth
@@ -110,16 +125,24 @@ export default function SignUp() {
             >
               Sign Up
             </Button>
-            <Grid container justifyContent="center">
-              <Grid item>
-                <Link href="#" variant="body2">
-                  Already have an account? Sign in
-                </Link>
-              </Grid>
+          </Box>
+          <Grid container justifyContent="center">
+            <Grid item>
+              <Link href="/ConventionApp/signIn" variant="body2">
+                Already have an account? Sign in
+              </Link>
             </Grid>
+          </Grid>
           
         </Box>
         <Copyright sx={{ mt: 5 }} />
+
+        <Backdrop
+          sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
+          open={open}
+        >
+          <CircularProgress color="inherit" />
+        </Backdrop>
       </Container>
     </ThemeProvider>
   );

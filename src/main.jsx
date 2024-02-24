@@ -1,6 +1,8 @@
 import React from 'react'
 import ReactDOM from 'react-dom/client'
-import App from './App.jsx'
+import App from './App'
+import SignIn from './components/SignIn'
+import SignUp from './components/SignUp'
 import store from './app/store'
 import { Provider } from 'react-redux'
 import {
@@ -8,10 +10,25 @@ import {
   RouterProvider,
 } from "react-router-dom";
 
-ReactDOM.createRoot(document.getElementById('root')).render(
+const router = createBrowserRouter([
+  {
+    path: "/ConventionApp/",
+    element: <App />,
+  },
+  {
+    path: "/ConventionApp/signIn",
+    element: <SignIn />
+  },
+  {
+    path: "/ConventionApp/signUp",
+    element: <SignUp />
+  },
+]);
+
+ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
     <Provider store={store}>
-    <App />
+      <RouterProvider router={router} />
     </Provider>
   </React.StrictMode>
   ,

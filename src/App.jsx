@@ -1,14 +1,11 @@
 import * as React from 'react';
 import './App.css';
 import ResponsiveAppBar from './components/Appbar'
-import { writeUserData } from './utils/Firebase';
-import SignIn from './components/SignIn';
-import SignUp from './components/SignUp';
 import ConventionWidget from './components/ConventionWidget'
 import FullWidthAdd from './components/FullWidthAdd';
 import Grid from "@mui/material/Grid";
 import { useDispatch, useSelector } from 'react-redux';
-import { updateDataAsync, selectConventionData, selectPeople, addNewConvention, selectElder, setElderName } from './features/userData/userDataSlice'
+import { updateDataAsync, selectConventionData, selectPeople, addNewConvention, selectElder, setElderName, writeData } from './features/userData/userDataSlice'
 import { Box, Button, ButtonGroup, IconButton, InputAdornment, Modal, TextField, Tooltip, Typography } from '@mui/material';
 import { v4 as uuidv4 } from 'uuid';
 import HelpOutlineOutlinedIcon from '@mui/icons-material/HelpOutlineOutlined';
@@ -56,11 +53,7 @@ function App() {
     dispatch(addNewConvention(event.target.name));
   }
 
-  React.useEffect(() => {
-    dispatch(updateDataAsync());
-  }, []);
-
-  return true ? (
+  return (
     <div>
       <ResponsiveAppBar />
       <h1>Convention form</h1>
@@ -87,7 +80,7 @@ function App() {
           <FullWidthAdd disabled={conventionData.length == conventions.length} onClick={() => handleOpen()} tooltip="Add new convention" />
         </Grid>
         <Grid item xs={12}>
-          <Button onClick={() => writeUserData(conventionData, people)}>Save</Button>
+          <Button onClick={() => dispatch(writeData())}>Save</Button>
         </Grid>
       </Grid>
 
@@ -114,8 +107,6 @@ function App() {
         </Box>
       </Modal>
     </div>
-    ) : (
-      <SignUp />
     )
 }
 

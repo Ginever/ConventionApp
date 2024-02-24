@@ -1,19 +1,47 @@
-import { createSlice } from "@reduxjs/toolkit";
-import { autoLogIn, readRegistrationData, writeUserData } from "../../utils/Firebase";
+import { initializeApp  } from "firebase/app";
+import { doc, setDoc, getDoc, getFirestore } from "firebase/firestore"; 
 import { v4 as uuidv4 } from 'uuid';
+import { userDataConverter } from "../../utils/data";
+import { createSlice } from "@reduxjs/toolkit";
+
+
+// Your web app's Firebase configuration
+const firebaseConfig = {
+    apiKey: "AIzaSyCRGO1PR6dGLQeac-jTOtrvJ6pu0pxJ35Y",
+    authDomain: "conventionapp-b0c29.firebaseapp.com",
+    databaseURL: "https://conventionapp-b0c29-default-rtdb.nam5.firebaseio.com/",
+    projectId: "conventionapp-b0c29",
+    storageBucket: "conventionapp-b0c29.appspot.com",
+    messagingSenderId: "98324564320",
+    appId: "1:98324564320:web:5d666e37ed9c3fd6393605",
+  };
+  
+// Initialize Firebase
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
 
 const initialState = {
     conventions: [],
-    people: [],
+    people: {},
     elderName: "",
 }
+
+//This is bad but I don't need uid for stateful reasons - yet
+var uid = "";
+export const setUid = (e) => {uid = e};
+export const isUserAuthed = () => uid != "";
 
 export const updateDataAsync = () => {
     return async (dispatch, getState) => {
         try {
-            await autoLogIn();
-            const response = await readRegistrationData();
-            dispatch(dataLoaded(response));
+            const docSnap = await getDoc(doc(db, 'users/', uid).withConverter(userDataConverter));
+
+            if (docSnap.exists()){
+                dispatch(dataLoaded(docSnap.data()));
+            } else {
+                console.log("Firestore document not found");
+            }
         } catch (err){
             console.error(err);
         }
@@ -25,9 +53,9 @@ export const userDataSlice = createSlice({
     initialState,
     reducers : {
         dataLoaded: (state, action) => {
-            state.conventions = action.payload.conventions;
-            state.people = action.payload.people;
-            state.elderName = action.payload.elderName;
+            state.conventions = action.payload.conventions ?? [];
+            state.people = action.payload.people ?? [];
+            state.elderName = action.payload.elderName ?? "";
         },
         handleDateSelectorToggles: (state, action) => {
             state.conventions[action.payload.index].daysAttending = action.payload.daysAttending;
@@ -41,6 +69,13 @@ export const userDataSlice = createSlice({
         setElderName: (state, action) => {
             state.elderName = action.payload;
         },
+        writeData: state => {
+            setDoc(doc(db, 'users/' + uid), {
+                conventions: state.conventions,
+                people: state.people,
+                elderName: state.elderName,
+              });
+        },  
         createNewPerson: (state, action) => {
             const uuid = uuidv4();
             state.people[uuid] = {
@@ -95,13 +130,14 @@ export const userDataSlice = createSlice({
     }
 })
 
-export const { 
+export const {
     dataLoaded, 
     handleDateSelectorToggles, 
     updateGlobalPerson, 
     updatePerson, 
     setElderName,
     addNewPerson,
+    writeData,
     createNewPerson,
     addNewConvention,
     removePerson,
