@@ -5,8 +5,8 @@ import ConventionWidget from './components/ConventionWidget'
 import FullWidthAdd from './components/FullWidthAdd';
 import Grid from "@mui/material/Grid";
 import { useDispatch, useSelector } from 'react-redux';
-import { updateDataAsync, selectConventionData, selectPeople, addNewConvention, selectElder, setElderName, writeData } from './features/userData/userDataSlice'
-import { Box, Button, ButtonGroup, IconButton, InputAdornment, Modal, TextField, Tooltip, Typography } from '@mui/material';
+import { updateDataAsync, selectConventionData, selectPeople, addNewConvention, selectElder, setElderName, writeData, selectTimeRange } from './features/userData/userDataSlice'
+import { Box, Button, ButtonGroup, Divider, IconButton, InputAdornment, Modal, TextField, Tooltip, Typography } from '@mui/material';
 import { v4 as uuidv4 } from 'uuid';
 import HelpOutlineOutlinedIcon from '@mui/icons-material/HelpOutlineOutlined';
 
@@ -37,6 +37,7 @@ function App() {
   const conventionData = useSelector(selectConventionData);
   const people = useSelector(selectPeople);
   const elderName = useSelector(selectElder);
+  const timeRange = useSelector(selectTimeRange);
   const dispatch = useDispatch();
 
   const [open, setOpen] = React.useState(false); //For the conventionSelect modal
@@ -71,16 +72,36 @@ function App() {
         />
         </Grid>
         <h2 style={{margin: "20px 1% 0px"}}>Convention's Attending: </h2>
-        {conventionData.map((convention) => (
+        {conventionData
+        .filter((convention) => isConventionInTimeRange(convention, timeRange))
+        .map((convention) => (
           <Grid key={convention.name} item xs={12}>
             <ConventionWidget index={conventionData.indexOf(convention)}/>
           </Grid>
               ))}
         <Grid item xs={12}>
-          <FullWidthAdd disabled={conventionData.length == conventions.length} onClick={() => handleOpen()} tooltip="Add new convention" />
+          <FullWidthAdd disabled={conventions.length == conventionData.filter((convention) => isConventionInTimeRange(convention, timeRange)).length} onClick={() => handleOpen()} tooltip="Add new convention" />
         </Grid>
         <Grid item xs={12}>
-          <Button onClick={() => dispatch(writeData())}>Save</Button>
+            <Divider sx={{ borderBottomWidth: 3, width: "max-width"}}/>
+        </Grid>
+        <Grid item xs={12}>
+          <Tooltip title="Save you progress">
+            <span>
+              <Button onClick={() => dispatch(writeData())} sx={{ border: 1, borderRadius: '5px', width: "100%", display: "flex", justifyContent: "center", alignItems: "center"}}>
+                  Save
+              </Button>
+            </span>
+          </Tooltip>
+        </Grid>
+        <Grid item xs={12}>
+          <Tooltip title="Submit">
+            <span>
+              <Button onClick={() => dispatch(writeData())} sx={{ border: 1, borderRadius: '5px', width: "100%", display: "flex", justifyContent: "center", alignItems: "center"}}>
+                  Submit
+              </Button>
+            </span>
+          </Tooltip>
         </Grid>
       </Grid>
 
@@ -97,7 +118,7 @@ function App() {
         variant="text"
         >
           {conventions.map((convention) => (
-            (conventionData.find(o => o.name === convention) != null) ? null : 
+            (conventionData.find(o => (o.name === convention && isConventionInTimeRange(o, timeRange))) != null) ? null : 
             <Button onClick={(e) => handleConventionButtonPress(e)} key={uuidv4()} name={convention} xs={12} width={1}>
               {convention}
             </Button>
@@ -132,6 +153,10 @@ const HelpIcon = ({helpText, margin}) => {
       </IconButton> 
       </Tooltip>
   );
+}
+
+function isConventionInTimeRange(convention, timeRange){
+  return Number(timeRange.split('-')[0]) < convention.dateCreated && convention.dateCreated < Number(timeRange.split('-')[1]);
 }
 
 export default App

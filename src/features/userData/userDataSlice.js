@@ -25,6 +25,16 @@ const initialState = {
     conventions: [],
     people: {},
     elderName: "",
+    timeRange: getInitialTimeRange()
+}
+
+function getInitialTimeRange() {
+    const date = new Date();
+    if (date.getMonth() <= 3) {
+        return new Date(date.getFullYear() - 1, 3).getTime() + '-' + new Date(date.getFullYear(), 2, 31).getTime();
+    } else {
+        return new Date(date.getFullYear(), 3).getTime() + '-' + new Date(date.getFullYear() + 1, 2, 31).getTime();
+   }
 }
 
 //This is bad but I don't need uid for stateful reasons - yet
@@ -36,6 +46,8 @@ export const updateDataAsync = () => {
     return async (dispatch, getState) => {
         try {
             const docSnap = await getDoc(doc(db, 'users/', uid).withConverter(userDataConverter));
+
+            console.log(docSnap.data());
 
             if (docSnap.exists()){
                 dispatch(dataLoaded(docSnap.data()));
@@ -69,6 +81,9 @@ export const userDataSlice = createSlice({
         setElderName: (state, action) => {
             state.elderName = action.payload;
         },
+        setTimeRange: (state, action) => {
+            state.timeRange = action.payload;
+        },
         writeData: state => {
             setDoc(doc(db, 'users/' + uid), {
                 conventions: state.conventions,
@@ -101,7 +116,9 @@ export const userDataSlice = createSlice({
             state.conventions.push({
                 name: action.payload,
                 daysAttending: [],
-                people: []
+                people: [],
+                //Creates the event inside the date range if current time not in date range
+                dateCreated: Number(state.timeRange.split('-')[0]) < Date.now() && Date.now() < Number(state.timeRange.split('-')[1]) ? Date.now() : Number(state.timeRange.split('-')[1]) - 1000
             })
         },
         removePerson: (state, action) => {
@@ -135,6 +152,7 @@ export const {
     handleDateSelectorToggles, 
     updateGlobalPerson, 
     updatePerson, 
+    setTimeRange,
     setElderName,
     addNewPerson,
     writeData,
@@ -147,6 +165,7 @@ export const {
 
 export const selectConventionData = state => state.userData.conventions;
 export const selectPeople = state => state.userData.people;
-export const selectElder = state => state.userData.elderName
+export const selectElder = state => state.userData.elderName;
+export const selectTimeRange = state => state.userData.timeRange;
 
 export default userDataSlice.reducer;
