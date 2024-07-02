@@ -82,7 +82,7 @@ export default function PersonForm({uuid, conventionIndex, personIndex}) {
                     <Divider sx={{margin: "0px 20px", borderBottomWidth: 3}}/>
                     <Box sx={{ mt: 3 }} width="95%" padding="0px 2.5%" marginBottom="10px">
                     <Grid container spacing={2}>
-                        <Grid xs={12} md={6}>
+                        <Grid xs={12} md={6} >
                             <IconTextField 
                                 tooltip="Enter FIRST Name here" 
                                 autoComplete="given-name" 

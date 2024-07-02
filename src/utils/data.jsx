@@ -42,7 +42,11 @@ const userDataConverter = {
         return {
             conventions: userData.Conventions,
             people: userData.people,
-            elderName: userData.elderName
+            elderName: userData.elderName,
+            firstName: userData.firstName,
+            lastName: userData.lastName,
+            age: userData.age,
+            gender: userData.gender
         }
     },
     fromFirestore: (snapshot, options) => {
@@ -50,7 +54,11 @@ const userDataConverter = {
         return {
             conventions: data.conventions,
             people: data.people,
-            elderName: data.elderName
+            elderName: data.elderName,
+            firstName: data.firstName,
+            lastName: data.lastName,
+            age: data.age,
+            gender: data.gender
             };
     }
 }

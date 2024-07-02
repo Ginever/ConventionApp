@@ -11,8 +11,8 @@ import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { Backdrop, CircularProgress } from '@mui/material';
-import { useDispatch } from 'react-redux';
-import { setUid, updateDataAsync } from '../features/userData/userDataSlice';
+import { useDispatch, useSelector } from 'react-redux';
+import { selectFirstName, selectLastName, setUid, updateFirstName, updateLastName } from '../features/userData/userDataSlice';
 import { useNavigate } from 'react-router-dom';
 import { createUserWithEmailAndPassword, getAuth } from 'firebase/auth';
 
@@ -35,10 +35,18 @@ const defaultTheme = createTheme();
 
 export default function SignUp() {
   const navigate = useNavigate();
+  const firstName = useSelector(selectFirstName);
+  const lastName = useSelector(selectLastName);
   const dispatch = useDispatch();
   const auth = getAuth();
 
+  const [formError, setFormError] = React.useState({firstName: null, lastName: null, email: null, password: null});
+
   const [open, setOpen] = React.useState(false);
+
+  const updateError = (firstName, lastName, email, password) => {
+    setFormError({firstName: firstName, lastName: lastName, email: email, password: password});
+  }
 
   const handleSubmit = async event => {
     event.preventDefault();
@@ -48,8 +56,21 @@ export default function SignUp() {
       setUid(value.user.uid);
       navigate('/ConventionApp');
     }).catch((err) => {
-      console.log(err);
+      console.log(err.code);
       setOpen(false);
+      switch (err.code) {
+        case 'auth/invalid-email':
+          updateError(null, null, "Invalid email", null);
+          break;
+        case 'auth/weak-password':
+          updateError(null, null, null, "Password is too weak");
+          break;
+        case 'auth/email-already-in-use':
+          updateError(null, null, "Email already in use", null);
+          break;
+        default:
+          updateError(null, null, err.message, err.message);
+      }
     });
   };
 
@@ -77,21 +98,27 @@ export default function SignUp() {
                 <TextField
                   autoComplete="given-name"
                   name="firstName"
-                  required
                   fullWidth
                   id="firstName"
                   label="First Name"
                   autoFocus
+                  error={formError.firstName != null}
+                  helperText={formError.firstName != null && formError.firstName != "" ? formError.firstName : null}
+                  value={firstName ?? ""}
+                  onChange={(e) => dispatch(updateFirstName(e.target.value))}
                 />
               </Grid>
               <Grid item xs={12} sm={6}>
                 <TextField
-                  required
                   fullWidth
                   id="lastName"
                   label="Last Name"
                   name="lastName"
                   autoComplete="family-name"
+                  error={formError.lastName != null}
+                  helperText={formError.lastName != null && formError.lastName != "" ? formError.lastName : null}
+                  value={lastName ?? ""} 
+                  onChange={(e) => dispatch(updateLastName(e.target.value))}
                 />
               </Grid>
               <Grid item xs={12}>
@@ -101,6 +128,8 @@ export default function SignUp() {
                   id="email"
                   label="Email Address"
                   name="email"
+                  error={formError.email != null}
+                  helperText={formError.email != null && formError.email != "" ? formError.email : null}
                   autoComplete="email"
                 />
               </Grid>
@@ -112,6 +141,8 @@ export default function SignUp() {
                   label="Password"
                   type="password"
                   id="password"
+                  error={formError.password != null}
+                  helperText={formError.password != null && formError.password != "" ? formError.password : null}
                   autoComplete="new-password"
                 />
               </Grid>

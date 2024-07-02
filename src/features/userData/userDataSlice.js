@@ -3,6 +3,7 @@ import { doc, setDoc, getDoc, getFirestore } from "firebase/firestore";
 import { v4 as uuidv4 } from 'uuid';
 import { userDataConverter } from "../../utils/data";
 import { createSlice } from "@reduxjs/toolkit";
+import { update } from "firebase/database";
 
 
 // Your web app's Firebase configuration
@@ -25,7 +26,11 @@ const initialState = {
     conventions: [],
     people: {},
     elderName: "",
-    timeRange: getInitialTimeRange()
+    timeRange: getInitialTimeRange(),
+    firstName: "",
+    lastName: "",
+    age: "",
+    gender: "",
 }
 
 function getInitialTimeRange() {
@@ -65,9 +70,27 @@ export const userDataSlice = createSlice({
     initialState,
     reducers : {
         dataLoaded: (state, action) => {
+            console.log(action.payload);
             state.conventions = action.payload.conventions ?? [];
             state.people = action.payload.people ?? [];
             state.elderName = action.payload.elderName ?? "";
+            state.firstName = action.payload.firstName ?? "";
+            state.lastName = action.payload.lastName ?? "";
+            state.age = action.payload.age ?? "";
+            state.gender = action.payload.gender ?? "";
+        },
+        updateFirstName: (state, action) => {
+            state.firstName = action.payload;
+            console.log(state.firstName);
+        },
+        updateLastName: (state, action) => {
+            state.lastName = action.payload;
+        },
+        updateAge: (state, action) => {
+            state.age = action.payload;
+        },
+        updateGender: (state, action) => {
+            state.gender = action.payload;
         },
         handleDateSelectorToggles: (state, action) => {
             state.conventions[action.payload.index].daysAttending = action.payload.daysAttending;
@@ -89,6 +112,10 @@ export const userDataSlice = createSlice({
                 conventions: state.conventions,
                 people: state.people,
                 elderName: state.elderName,
+                firstName: state.firstName,
+                lastName: state.lastName,
+                age: state.age,
+                gender: state.gender,
               });
         },  
         createNewPerson: (state, action) => {
@@ -149,6 +176,10 @@ export const userDataSlice = createSlice({
 
 export const {
     dataLoaded, 
+    updateFirstName,
+    updateLastName,
+    updateAge,
+    updateGender,
     handleDateSelectorToggles, 
     updateGlobalPerson, 
     updatePerson, 
@@ -167,5 +198,9 @@ export const selectConventionData = state => state.userData.conventions;
 export const selectPeople = state => state.userData.people;
 export const selectElder = state => state.userData.elderName;
 export const selectTimeRange = state => state.userData.timeRange;
+export const selectFirstName = state => state.userData.firstName;
+export const selectLastName = state => state.userData.lastName;
+export const selectAge = state => state.userData.age;
+export const selectGender = state => state.userData.gender;
 
 export default userDataSlice.reducer;

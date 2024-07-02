@@ -9,6 +9,7 @@ import { updateDataAsync, selectConventionData, selectPeople, addNewConvention, 
 import { Box, Button, ButtonGroup, Divider, IconButton, InputAdornment, Modal, TextField, Tooltip, Typography } from '@mui/material';
 import { v4 as uuidv4 } from 'uuid';
 import HelpOutlineOutlinedIcon from '@mui/icons-material/HelpOutlineOutlined';
+import PersonalInformation from './components/PersonalInformation';
 
 
 
@@ -60,6 +61,9 @@ function App() {
       <h1>Convention form</h1>
       <Grid container spacing={2} padding="0px 2.5%">
         <Grid item xs={12}>
+        <PersonalInformation />
+          </Grid>
+        <Grid item xs={12}>
         <IconTextField 
             tooltip="Enter you Elders Full name. This allows us to contact you though your elder should we need to" 
             fullWidth 
@@ -71,7 +75,9 @@ function App() {
             onChange={(e) => dispatch(setElderName(e.target.value))} 
         />
         </Grid>
-        <h2 style={{margin: "20px 1% 0px"}}>Convention's Attending: </h2>
+        <Grid item xs={12}>
+          <h2 style={{margin: 0}}>Convention's Attending: </h2>
+        </Grid>
         {conventionData
         .filter((convention) => isConventionInTimeRange(convention, timeRange))
         .map((convention) => (
