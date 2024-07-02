@@ -20,7 +20,7 @@ import { useDispatch, useSelector } from 'react-redux';
 const theme = createTheme();
 
 const pages = ['Register', 'Log In/Sign up'];
-const settings = ['Profile', 'Account', 'Dashboard', 'Logout'];
+const settings = ['Personal Information', 'About the App', 'Logout'];
 const startTime = new Date(2021, 4);
 const currentTime = new Date();
 const years = Array.from({length: Math.ceil(currentTime.getFullYear() - startTime.getFullYear() + 1)}, (x, i) => {

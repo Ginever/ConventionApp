@@ -86,7 +86,7 @@ function App() {
             <Divider sx={{ borderBottomWidth: 3, width: "max-width"}}/>
         </Grid>
         <Grid item xs={12}>
-          <Tooltip title="Save you progress">
+          <Tooltip title="Save your progress">
             <span>
               <Button onClick={() => dispatch(writeData())} sx={{ border: 1, borderRadius: '5px', width: "100%", display: "flex", justifyContent: "center", alignItems: "center"}}>
                   Save
@@ -95,7 +95,7 @@ function App() {
           </Tooltip>
         </Grid>
         <Grid item xs={12}>
-          <Tooltip title="Submit">
+          <Tooltip title="Submit your information to convention managers">
             <span>
               <Button onClick={() => dispatch(writeData())} sx={{ border: 1, borderRadius: '5px', width: "100%", display: "flex", justifyContent: "center", alignItems: "center"}}>
                   Submit

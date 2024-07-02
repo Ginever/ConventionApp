@@ -74,7 +74,7 @@ export default function ConventionForm({index}) {
                 <Divider sx={{ borderBottomWidth: 3, width: "max-width"}}/>
             </Grid>
             <Grid item xs={12}>
-                <Typography sx={{width: "min-width", float: "left", height: 'max-height', textAlign: "left", marginRight: "auto", fontSize: "20px"}}>Who is attending this Convention:</Typography>
+                <Typography sx={{width: "min-width", float: "left", height: 'max-height', textAlign: "left", marginRight: "auto", fontSize: "20px"}}>Who is attending this Convention with you:</Typography>
             </Grid>
             
             {conventionData.people.map((person) => (
