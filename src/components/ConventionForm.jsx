@@ -12,6 +12,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { addNewPerson, createNewPerson, deletePerson, handleDateSelectorToggles, selectConventionData, selectPeople } from '../features/userData/userDataSlice';
 import { Button, ButtonGroup, IconButton, Modal } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
+import store from '../app/store';
 
 
 const style = {

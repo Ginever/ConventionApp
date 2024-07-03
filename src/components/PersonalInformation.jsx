@@ -1,15 +1,12 @@
 import * as React from 'react';
-import { TextField, InputAdornment, Tooltip, IconButton, FormControl, InputLabel, Select, MenuItem } from '@mui/material';
+import { TextField, InputAdornment, Tooltip, IconButton, FormControl, InputLabel, Select, MenuItem, FormHelperText } from '@mui/material';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import Grid from '@mui/material/Unstable_Grid2';
 import HelpOutlineOutlinedIcon from '@mui/icons-material/HelpOutlineOutlined';
 import { useDispatch, useSelector } from 'react-redux';
-import { selectAge, selectFirstName, selectGender, selectLastName, updateAge, updateFirstName, updateGender, updateLastName } from '../features/userData/userDataSlice';
-import { Box } from '@mui/system';
-
-
-
-const genders = ['Male', 'Female', 'Other'].sort();
+import userDataSlice, { selectAge, selectFirstName, selectGender, selectLastName, updateAge, updateFirstName, updateGender, updateLastName } from '../features/userData/userDataSlice';
+import { genders } from '../utils/datalists';
+import { selectAgeError, selectFirstNameError, selectGenderError, selectLastNameError } from '../features/errorState/errorStateSlice';
 
 export default function PersonalInformation(){
     const dispatch = useDispatch();
@@ -17,9 +14,10 @@ export default function PersonalInformation(){
     const lastName = useSelector(selectLastName);
     const age = useSelector(selectAge);
     const gender = useSelector(selectGender);
-
-
-
+    const firstNameError = useSelector(selectFirstNameError);
+    const lastNameError = useSelector(selectLastNameError);
+    const ageError = useSelector(selectAgeError);
+    const genderError = useSelector(selectGenderError);
 
     return (
         <ThemeProvider
@@ -33,7 +31,9 @@ export default function PersonalInformation(){
                             fullWidth 
                             label="First Name"
                             name="firstName"
-                            variant="outlined" 
+                            variant="outlined"
+                            error={firstNameError != null}
+                            helperText={getHelperText(firstNameError)}
                             id="firstName" 
                             value={firstName ?? ""} 
                             onChange={(e) => dispatch(updateFirstName(e.target.value))} 
@@ -48,6 +48,8 @@ export default function PersonalInformation(){
                             name="lastName" 
                             label="Last Name" 
                             variant="outlined" 
+                            error={lastNameError != null}
+                            helperText={getHelperText(lastNameError)}
                             value={lastName ?? ""} 
                             onChange={(e) => dispatch(updateLastName(e.target.value))}
                         />
@@ -60,6 +62,8 @@ export default function PersonalInformation(){
                             id="age" 
                             name="age" 
                             label="Age" 
+                            error={ageError != null}
+                            helperText={getHelperText(ageError)}
                             variant="outlined" 
                             value={age  ?? ""} 
                             onChange={(e) => dispatch(updateAge(e.target.value))}
@@ -67,7 +71,7 @@ export default function PersonalInformation(){
                     </Grid>
                     <Grid xs={12} md={6}>
                         <FormControl fullWidth>
-                            <InputLabel id="gender-selector-label">Gender</InputLabel>
+                            <InputLabel error={genderError != null} id="gender-selector-label">Gender</InputLabel>
                             <Select
                                 endAdornment={<HelpIcon helpText="Select your Gender" margin="0px 10px"/>}
                                 labelId="gender-selector-label"
@@ -75,6 +79,7 @@ export default function PersonalInformation(){
                                 name="gender"
                                 value={gender  ?? ""}
                                 label="Gender"
+                                error={genderError != null}
                                 onChange={(e) => dispatch(updateGender(e.target.value))}
                             >
                                 {genders.map((gender) => (
@@ -82,6 +87,7 @@ export default function PersonalInformation(){
                                 ))}
 
                             </Select>
+                            <FormHelperText error>{getHelperText(genderError)}</FormHelperText>
                         </FormControl>
                     </Grid>
                 </Grid>
@@ -112,4 +118,14 @@ return (
     </IconButton> 
     </Tooltip>
 );
+}
+
+/**
+ * A helper function to return the error message to display
+ * @param {*} errorMessage the error message
+ * @returns the helper message if there is one otherwise null
+ */
+function getHelperText(errorMessage){
+    if (errorMessage != null && errorMessage != "") return errorMessage;
+    return ;
 }

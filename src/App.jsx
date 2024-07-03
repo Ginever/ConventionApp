@@ -5,11 +5,15 @@ import ConventionWidget from './components/ConventionWidget'
 import FullWidthAdd from './components/FullWidthAdd';
 import Grid from "@mui/material/Grid";
 import { useDispatch, useSelector } from 'react-redux';
-import { updateDataAsync, selectConventionData, selectPeople, addNewConvention, selectElder, setElderName, writeData, selectTimeRange } from './features/userData/userDataSlice'
+import { updateDataAsync, selectConventionData, selectPeople, addNewConvention, selectElder, setElderName, writeData, selectTimeRange, selectFirstName, selectFormError } from './features/userData/userDataSlice'
 import { Box, Button, ButtonGroup, Divider, IconButton, InputAdornment, Modal, TextField, Tooltip, Typography } from '@mui/material';
 import { v4 as uuidv4 } from 'uuid';
 import HelpOutlineOutlinedIcon from '@mui/icons-material/HelpOutlineOutlined';
 import PersonalInformation from './components/PersonalInformation';
+import { conventions } from './utils/datalists';
+import store from './app/store';
+import { checkWholeForm } from './utils/errorChecking';
+import { selectElderNameError } from './features/errorState/errorStateSlice';
 
 
 
@@ -26,12 +30,6 @@ const style = {
   p: 4,
 };
 
-const conventions = [
-  '1st Pukekohe', 
-  '2nd Pukekohe', 
-  '1st Masterton', 
-  '2nd Masterton'
-];
 
 
 function App() {
@@ -39,6 +37,7 @@ function App() {
   const people = useSelector(selectPeople);
   const elderName = useSelector(selectElder);
   const timeRange = useSelector(selectTimeRange);
+  const elderNameError = useSelector(selectElderNameError);
   const dispatch = useDispatch();
 
   const [open, setOpen] = React.useState(false); //For the conventionSelect modal
@@ -70,7 +69,9 @@ function App() {
             label="Elders Name"
             name="eldersName"
             variant="outlined" 
-            id="eldersName" 
+            id="eldersName"
+            error={elderNameError != null}
+            helperText={elderNameError != null && elderNameError != "" ? elderNameError : null}
             value={elderName} 
             onChange={(e) => dispatch(setElderName(e.target.value))} 
         />
@@ -103,7 +104,7 @@ function App() {
         <Grid item xs={12}>
           <Tooltip title="Submit your information to convention managers">
             <span>
-              <Button onClick={() => dispatch(writeData())} sx={{ border: 1, borderRadius: '5px', width: "100%", display: "flex", justifyContent: "center", alignItems: "center"}}>
+              <Button onClick={() => checkWholeForm(dispatch)} sx={{ border: 1, borderRadius: '5px', width: "100%", display: "flex", justifyContent: "center", alignItems: "center"}}>
                   Submit
               </Button>
             </span>

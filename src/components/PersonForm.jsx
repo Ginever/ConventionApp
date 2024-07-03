@@ -7,36 +7,20 @@ import ArrowDropUpIcon from '@mui/icons-material/ArrowDropUp';
 import DeleteIcon from '@mui/icons-material/Delete';
 import Grid from '@mui/material/Unstable_Grid2';
 import { red } from '@mui/material/colors';
-import { FormControl, IconButton, InputAdornment, InputLabel, MenuItem, Select, TextField, Tooltip } from '@mui/material';
+import { FormControl, FormHelperText, IconButton, InputAdornment, InputLabel, MenuItem, Select, TextField, Tooltip } from '@mui/material';
 import Divider from '@mui/material/Divider';
 import { useDispatch, useSelector } from 'react-redux';
-import { removePerson, selectConventionData, selectPeople, updateGlobalPerson, updatePerson } from '../features/userData/userDataSlice';
+import { removePerson, selectConventionData, selectFormError, selectPeople, updateGlobalPerson, updatePerson } from '../features/userData/userDataSlice';
 import HelpOutlineOutlinedIcon from '@mui/icons-material/HelpOutlineOutlined';
+import {genders, jobs, accommodations} from '../utils/datalists';
 
-const genders = ['Male', 'Female', 'Other'].sort();
-const jobs = [
-    'Dishes', 
-    'Waitering', 
-    'Laundry', 
-    "I won't be available for a job"
-]
-
-const accommodations = [
-    'Off Grounds/Day Bed',
-    'Off Grounds',
-    'Family Tent (Own tent)',
-    'Tent (Convention tent)',
-    'Tent (Own tent)',
-    'Shed',
-    'Caravan',
-    'Other'
-  ];
 
 export default function PersonForm({uuid, conventionIndex, personIndex}) {
     const dispatch = useDispatch();
     const person = useSelector(selectPeople)[uuid];
     const personData = useSelector(selectConventionData)[conventionIndex].people[personIndex]; //I hate this but I can't think of a better way to access per convention user data
     const [isSelected, setIsSelected] = React.useState('');
+    const error = useSelector(selectFormError).getConventionError(conventionIndex).getPersonError(personIndex);
 
     function handleClick() {
         setIsSelected(!isSelected);
@@ -57,10 +41,10 @@ export default function PersonForm({uuid, conventionIndex, personIndex}) {
     return (
         <ThemeProvider
             theme={createTheme()}>
-            <Box sx={{ border: 1, borderRadius: '5px', width: "max-width", height: "min-height"}}>
+            <Box sx={{ border: 1, borderRadius: '5px', borderColor: colorFromErrorState(error.doAnyError()), width: "max-width", height: "min-height"}}>
                 <Grid container onClick={handleClick}>
                     <Grid>
-                        <Typography sx={{ margin: "10px 20px", fontSize: "35px"}}>
+                        <Typography color={error.doAnyError() ? "red" : "black"} sx={{ margin: "10px 20px", fontSize: "35px"}}>
                             {person.firstName} {person.lastName}
                         </Typography>
                     </Grid>
@@ -89,6 +73,8 @@ export default function PersonForm({uuid, conventionIndex, personIndex}) {
                                 fullWidth 
                                 label="First Name"
                                 name="firstName"
+                                error={error.firstName != null}
+                                helperText={error.firstName != null && error.firstName != "" ? error.firstName : null}
                                 variant="outlined" 
                                 id="firstName" 
                                 value={person.firstName ?? ""} 
@@ -103,6 +89,8 @@ export default function PersonForm({uuid, conventionIndex, personIndex}) {
                                 id="lastName" 
                                 name="lastName" 
                                 label="Last Name" 
+                                error={error.lastName != null}
+                                helperText={error.lastName != null && error.lastName != "" ? error.lastName : null}
                                 variant="outlined" 
                                 value={person.lastName ?? ""} 
                                 onChange={(e) => handleGlobalChange(e)}
@@ -115,6 +103,8 @@ export default function PersonForm({uuid, conventionIndex, personIndex}) {
                                 type="number"
                                 id="age" 
                                 name="age" 
+                                error={error.age != null}
+                                helperText={error.age != null && error.age != "" ? error.age : null}
                                 label="Age" 
                                 variant="outlined" 
                                 value={person.age  ?? ""} 
@@ -123,12 +113,13 @@ export default function PersonForm({uuid, conventionIndex, personIndex}) {
                         </Grid>
                         <Grid xs={12} md={6}>
                             <FormControl fullWidth>
-                                <InputLabel id="gender-selector-label">Gender</InputLabel>
+                                <InputLabel error={error.gender != null} id="gender-selector-label">Gender</InputLabel>
                                 <Select
                                     endAdornment={<HelpIcon helpText="Select your Gender" margin="0px 10px"/>}
                                     labelId="gender-selector-label"
                                     id="gender-selector"
                                     name="gender"
+                                    error={error.gender != null}
                                     value={person.gender  ?? ""}
                                     label="Gender"
                                     onChange={(e) => handleGlobalChange(e)}
@@ -138,17 +129,19 @@ export default function PersonForm({uuid, conventionIndex, personIndex}) {
                                     ))}
 
                                 </Select>
+                                <FormHelperText error>{error.gender != null && error.gender != "" ? error.gender : null}</FormHelperText>
                             </FormControl>
                         </Grid>
                         <Grid xs={12}>
                             <FormControl fullWidth>
-                                <InputLabel id="job-selector-label">Preferred Job</InputLabel>
+                                <InputLabel error={error.preferredJob != null} id="job-selector-label">Preferred Job</InputLabel>
                                 <Select
                                     endAdornment={<HelpIcon helpText="Select your preferred job" margin="0px 10px"/>}
                                     labelId="job-selector-label"
                                     id="job-selector"
                                     name="job"
-                                    value={personData.job  ?? ""}
+                                    error={error.age != null}
+                                    value={personData.preferredJob  ?? ""}
                                     label="Preferred Job"
                                     onChange={(e) => handleChange(e)}
                                 >
@@ -157,16 +150,18 @@ export default function PersonForm({uuid, conventionIndex, personIndex}) {
                                     ))}
 
                                 </Select>
+                                <FormHelperText error>{error.preferredJob != null && error.preferredJob != "" ? error.preferredJob : null}</FormHelperText>
                             </FormControl>
                         </Grid>
                         <Grid xs={12}>
                             <FormControl fullWidth>
-                                <InputLabel id="accommodation-selector-label">Accommodation</InputLabel>
+                                <InputLabel error={error.accommodation != null} id="accommodation-selector-label">Accommodation</InputLabel>
                                 <Select
                                     endAdornment={<HelpIcon helpText="Select your Accommodation" margin="0px 10px"/>}
                                     labelId="accommodation-selector-label"
                                     id="accommodation-selector"
                                     name="accommodation"
+                                    error={error.accommodation != null}
                                     value={personData.accommodation  ?? ""}
                                     label="Accommodation"
                                     onChange={(e) => handleChange(e)}
@@ -176,6 +171,7 @@ export default function PersonForm({uuid, conventionIndex, personIndex}) {
                                     ))}
 
                                 </Select>
+                                <FormHelperText error>{error.accommodation != null && error.accommodation != "" ? error.accommodation : null}</FormHelperText>
                             </FormControl>
                         </Grid>
                     </Grid>
@@ -210,4 +206,9 @@ const HelpIcon = ({helpText, margin}) => {
         </IconButton> 
         </Tooltip>
     );
+}
+
+function colorFromErrorState(error) {
+    if (error) return "red";
+    return "black";
 }

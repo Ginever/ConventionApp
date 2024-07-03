@@ -1,9 +1,11 @@
 import { initializeApp  } from "firebase/app";
-import { doc, setDoc, getDoc, getFirestore } from "firebase/firestore"; 
+import { doc, setDoc, getDoc, getFirestore, initializeFirestore, persistentLocalCache } from "firebase/firestore"; 
 import { v4 as uuidv4 } from 'uuid';
 import { userDataConverter } from "../../utils/data";
 import { createSlice } from "@reduxjs/toolkit";
-import { update } from "firebase/database";
+import { FormError } from "../../utils/error";
+import errorStateSlice, { selectFirstNameError, updateErrorState } from "../errorState/errorStateSlice";
+
 
 
 // Your web app's Firebase configuration
@@ -18,7 +20,9 @@ const firebaseConfig = {
   };
   
 // Initialize Firebase
+//This is being done in two places and is bad coding but I can't be asked to fix it now (Firebase.jsx)
 const app = initializeApp(firebaseConfig);
+initializeFirestore(app, {localCache: persistentLocalCache(/*settings*/{})});
 const db = getFirestore(app);
 
 
@@ -26,11 +30,11 @@ const initialState = {
     conventions: [],
     people: {},
     elderName: "",
-    timeRange: getInitialTimeRange(),
     firstName: "",
     lastName: "",
     age: "",
     gender: "",
+    timeRange: getInitialTimeRange(),
 }
 
 function getInitialTimeRange() {
@@ -78,10 +82,10 @@ export const userDataSlice = createSlice({
             state.lastName = action.payload.lastName ?? "";
             state.age = action.payload.age ?? "";
             state.gender = action.payload.gender ?? "";
+            console.log(state);
         },
         updateFirstName: (state, action) => {
             state.firstName = action.payload;
-            console.log(state.firstName);
         },
         updateLastName: (state, action) => {
             state.lastName = action.payload;
@@ -117,7 +121,7 @@ export const userDataSlice = createSlice({
                 age: state.age,
                 gender: state.gender,
               });
-        },  
+        },
         createNewPerson: (state, action) => {
             const uuid = uuidv4();
             state.people[uuid] = {
@@ -202,5 +206,6 @@ export const selectFirstName = state => state.userData.firstName;
 export const selectLastName = state => state.userData.lastName;
 export const selectAge = state => state.userData.age;
 export const selectGender = state => state.userData.gender;
+export const selectFormError = state => state.userData.error;
 
 export default userDataSlice.reducer;

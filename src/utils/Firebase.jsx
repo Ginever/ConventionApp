@@ -1,5 +1,5 @@
 import { initializeApp  } from "firebase/app";
-import { doc, setDoc, getDoc, getFirestore } from "firebase/firestore"; 
+import { doc, setDoc, getDoc, getFirestore, initializeFirestore, persistentLocalCache } from "firebase/firestore"; 
 import { userDataConverter } from './data'
 
 // Your web app's Firebase configuration
@@ -14,7 +14,9 @@ const firebaseConfig = {
 };
   
 // Initialize Firebase
+//This is being done in two places and is bad coding but I can't be asked to fix it now (userDataSlice.js)
 const app = initializeApp(firebaseConfig);
+initializeFirestore(app, {localCache: persistentLocalCache(/*settings*/{})});
 const db = getFirestore(app);
 
 var user = null;
