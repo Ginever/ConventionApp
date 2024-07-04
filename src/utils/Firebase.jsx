@@ -1,6 +1,8 @@
 import { initializeApp  } from "firebase/app";
 import { doc, setDoc, getDoc, getFirestore, initializeFirestore, persistentLocalCache } from "firebase/firestore"; 
 import { userDataConverter } from './data'
+import { getAuth, signInAnonymously, signInWithEmailAndPassword } from "firebase/auth";
+import { LastPage } from "@mui/icons-material";
 
 // Your web app's Firebase configuration
 const firebaseConfig = {
@@ -18,26 +20,52 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 initializeFirestore(app, {localCache: persistentLocalCache(/*settings*/{})});
 const db = getFirestore(app);
+const auth = getAuth(app);
 
-var user = null;
+export var uid = null;
 
-function writeUserData(conventions, people){
-    console.log(conventions);
-    console.log(people);
-    setDoc(doc(db, 'users/' + user.uid), {
-        conventions: conventions,
-        people: people,
-      });
+export const isUserAuthed = () => uid != "";
+
+export async function signInWithEmail(email, password){
+    await signInWithEmailAndPassword(auth, email, password).then((value) => {uid = value.user.uid; console.log(uid);});
 }
 
-async function readRegistrationData(uid){
-    const docSnap = await getDoc(doc(db, 'users/', uid).withConverter(userDataConverter));
+export async function createUserWithEmail(email, password){
+    await createUserWithEmailAndPassword(auth, email, password).then((value) => uid = value.user.uid);
+}
 
-    if (docSnap.exists()){
-        return docSnap.data();
-    } else {
-        console.log("Firestore document not found");
+//Sign in Anonymously
+signInAnonymously(auth).then((value) => uid = value.user.uid, (err) => console.log(err));
+
+
+function writeUserData(data){
+    console.log(data);
+    setDoc(doc(db, 'users/', uid), data);
+}
+
+async function readRegistrationData(){
+    try {
+        const docSnap = await getDoc(doc(db, 'users/', uid).withConverter(userDataConverter));
+
+        if (docSnap.exists()){
+            return docSnap.data();
+        } else {
+            console.log("Firestore document not found");
+            return null;
+        }
+
+    } catch (e) {
+        console.error("Error reading document: ", e);
+        return null;
     }
+}
+
+export function writeConventionData(conventionName, data){
+    console.log(data);
+
+    data["isAnonymous"] 
+
+    setDoc(doc(db, 'conventions/', conventionName, '/attendees/', uid), data);
 }
 
 export { writeUserData, readRegistrationData };

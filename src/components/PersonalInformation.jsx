@@ -6,7 +6,7 @@ import HelpOutlineOutlinedIcon from '@mui/icons-material/HelpOutlineOutlined';
 import { useDispatch, useSelector } from 'react-redux';
 import userDataSlice, { selectAge, selectFirstName, selectGender, selectLastName, updateAge, updateFirstName, updateGender, updateLastName } from '../features/userData/userDataSlice';
 import { genders } from '../utils/datalists';
-import { selectAgeError, selectFirstNameError, selectGenderError, selectLastNameError } from '../features/errorState/errorStateSlice';
+import { clearErrorState, selectAgeError, selectFirstNameError, selectGenderError, selectLastNameError, updateErrorState } from '../features/errorState/errorStateSlice';
 
 export default function PersonalInformation(){
     const dispatch = useDispatch();
@@ -37,6 +37,7 @@ export default function PersonalInformation(){
                             id="firstName" 
                             value={firstName ?? ""} 
                             onChange={(e) => dispatch(updateFirstName(e.target.value))} 
+                            onClick={() => dispatch(clearErrorState({firstName: ""}))}
                         />
                     </Grid>
                     <Grid xs={12} md={6}>
@@ -52,6 +53,7 @@ export default function PersonalInformation(){
                             helperText={getHelperText(lastNameError)}
                             value={lastName ?? ""} 
                             onChange={(e) => dispatch(updateLastName(e.target.value))}
+                            onClick={() => dispatch(clearErrorState({lastName: ""}))}
                         />
                     </Grid>
                     <Grid xs={12} md={6}>
@@ -67,6 +69,7 @@ export default function PersonalInformation(){
                             variant="outlined" 
                             value={age  ?? ""} 
                             onChange={(e) => dispatch(updateAge(e.target.value))}
+                            onClick={() => dispatch(clearErrorState({age: ""}))}
                         />
                     </Grid>
                     <Grid xs={12} md={6}>
@@ -81,6 +84,7 @@ export default function PersonalInformation(){
                                 label="Gender"
                                 error={genderError != null}
                                 onChange={(e) => dispatch(updateGender(e.target.value))}
+                                onClick={() => dispatch(clearErrorState({gender: ""}))}
                             >
                                 {genders.map((gender) => (
                                 <MenuItem key={gender} value={gender}>{gender}</MenuItem>

@@ -12,9 +12,9 @@ import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { Backdrop, CircularProgress } from '@mui/material';
 import { useDispatch, useSelector } from 'react-redux';
-import { selectFirstName, selectLastName, setUid, updateFirstName, updateLastName } from '../features/userData/userDataSlice';
+import { selectFirstName, selectLastName, updateFirstName, updateLastName } from '../features/userData/userDataSlice';
 import { useNavigate } from 'react-router-dom';
-import { createUserWithEmailAndPassword, getAuth } from 'firebase/auth';
+import { createUserWithEmail } from '../utils/Firebase';
 
 function Copyright(props) {
   return (
@@ -38,7 +38,6 @@ export default function SignUp() {
   const firstName = useSelector(selectFirstName);
   const lastName = useSelector(selectLastName);
   const dispatch = useDispatch();
-  const auth = getAuth();
 
   const [formError, setFormError] = React.useState({firstName: null, lastName: null, email: null, password: null});
 
@@ -52,8 +51,7 @@ export default function SignUp() {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
     setOpen(true);
-    createUserWithEmailAndPassword(auth, data.get('email'), data.get('password')).then((value) => {
-      setUid(value.user.uid);
+    createUserWithEmail(ata.get('email'), data.get('password')).then((value) => {
       navigate('/ConventionApp');
     }).catch((err) => {
       console.log(err.code);

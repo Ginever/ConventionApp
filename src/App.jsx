@@ -5,16 +5,16 @@ import ConventionWidget from './components/ConventionWidget'
 import FullWidthAdd from './components/FullWidthAdd';
 import Grid from "@mui/material/Grid";
 import { useDispatch, useSelector } from 'react-redux';
-import { updateDataAsync, selectConventionData, selectPeople, addNewConvention, selectElder, setElderName, writeData, selectTimeRange, selectFirstName, selectFormError } from './features/userData/userDataSlice'
+import { selectConventionData, selectPeople, addNewConvention, selectElder, setElderName, writeData, selectTimeRange, selectFirstName } from './features/userData/userDataSlice'
 import { Box, Button, ButtonGroup, Divider, IconButton, InputAdornment, Modal, TextField, Tooltip, Typography } from '@mui/material';
 import { v4 as uuidv4 } from 'uuid';
 import HelpOutlineOutlinedIcon from '@mui/icons-material/HelpOutlineOutlined';
 import PersonalInformation from './components/PersonalInformation';
 import { conventions } from './utils/datalists';
 import store from './app/store';
-import { checkWholeForm } from './utils/errorChecking';
-import { selectElderNameError } from './features/errorState/errorStateSlice';
-
+import { checkWholeForm, formatAndSendConventionData } from './utils/errorChecking';
+import { clearErrorState, selectElderNameError } from './features/errorState/errorStateSlice';
+import { writeConventionData } from './utils/Firebase';
 
 
 const style = {
@@ -74,6 +74,7 @@ function App() {
             helperText={elderNameError != null && elderNameError != "" ? elderNameError : null}
             value={elderName} 
             onChange={(e) => dispatch(setElderName(e.target.value))} 
+            onClick={() => dispatch(clearErrorState({elderName: ""}))}
         />
         </Grid>
         <Grid item xs={12}>
@@ -104,7 +105,7 @@ function App() {
         <Grid item xs={12}>
           <Tooltip title="Submit your information to convention managers">
             <span>
-              <Button onClick={() => checkWholeForm(dispatch)} sx={{ border: 1, borderRadius: '5px', width: "100%", display: "flex", justifyContent: "center", alignItems: "center"}}>
+              <Button onClick={() => {if (checkWholeForm(dispatch)) formatAndSendConventionData()} } sx={{ border: 1, borderRadius: '5px', width: "100%", display: "flex", justifyContent: "center", alignItems: "center"}}>
                   Submit
               </Button>
             </span>

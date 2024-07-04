@@ -12,8 +12,8 @@ import Container from '@mui/material/Container';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { Backdrop, CircularProgress } from '@mui/material';
-import { setUid, updateDataAsync } from '../features/userData/userDataSlice';
-import { getAuth, signInWithEmailAndPassword } from 'firebase/auth';
+import { updateDataAsync } from '../features/userData/userDataSlice';
+import { signInWithEmail, uid } from '../utils/Firebase';
 
 function Copyright(props) {
   return (
@@ -31,7 +31,6 @@ function Copyright(props) {
 export default function SignIn() { 
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const auth = getAuth();
 
   const [open, setOpen] = React.useState(false);
 
@@ -39,8 +38,7 @@ export default function SignIn() {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
     setOpen(true);
-    signInWithEmailAndPassword(auth, data.get('email'), data.get('password')).then((value) => {
-      setUid(value.user.uid);
+    signInWithEmail(data.get('email'), data.get('password')).then(() => {
       dispatch(updateDataAsync());
       navigate('/ConventionApp');
     }).catch((err) => {

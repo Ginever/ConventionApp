@@ -13,6 +13,8 @@ import { addNewPerson, createNewPerson, deletePerson, handleDateSelectorToggles,
 import { Button, ButtonGroup, IconButton, Modal } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import store from '../app/store';
+import { ConventionError } from '../utils/error';
+import { clearConventionErrorState, clearErrorState } from '../features/errorState/errorStateSlice';
 
 
 const style = {
@@ -34,6 +36,7 @@ export default function ConventionForm({index}) {
     const dispatch = useDispatch();
     const conventionData = useSelector(selectConventionData)[index];
     const people = useSelector(selectPeople);
+    const error = store.getState().errorState.conventions[index] ?? new ConventionError();
 
     const [open, setOpen] = React.useState(false); //For the personSelect modal
     const handleOpen = () => {
@@ -48,6 +51,7 @@ export default function ConventionForm({index}) {
 
     const handleToggleButton = (event, newToggles) => {
         dispatch(handleDateSelectorToggles({index: index, daysAttending: newToggles}))
+        dispatch(clearConventionErrorState({index: index, daysAttending: ""}))
     }
 
     return (
@@ -55,7 +59,7 @@ export default function ConventionForm({index}) {
         <Grid container spacing={2}>
             <Grid item xs={12}>
                 <Box sx={{width: 'max-width', height: 'min-height', display: "flex", alignItems: "center"}}>
-                    <Typography sx={{width: "min-width", float: "left", height: 'max-height', textAlign: "left", marginRight: "auto"}}>Select the days you be attending Convention:</Typography>
+                    <Typography color={error.daysAttending != null ? "red": "black"} sx={{width: "min-width", float: "left", height: 'max-height', textAlign: "left", marginRight: "auto"}}>Select the days you be attending Convention:</Typography>
                     <ToggleButtonGroup 
                         color="primary"
                         orientation={width<800 ? "vertical": "horizontal"} 

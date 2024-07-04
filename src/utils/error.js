@@ -28,14 +28,34 @@ export class FormError {
         return this.conventions[index];
     }
 
+    doAnyError() {
+        let anyError = false;   
+
+        //We need to iterate though all convention errors to check if any have errors to display to the user
+        for (let i = 0; i < this.conventions.length; i++) if (this.conventions[i].doAnyError()) anyError = true;
+
+        if (anyError) return true;
+        if (this.firstName != null) return true;
+        if (this.lastName != null) return true;
+        if (this.age != null) return true;
+        if (this.gender != null) return true;
+        if (this.elderName != null) return true;
+        
+        return false;
+    }
+
     JSONfy() {
+        const conventions = [];
+        this.conventions.forEach(e => {
+            conventions.push(e.JSONfy());
+        });
         return {
             firstName: this.firstName,
             lastName: this.lastName,
             age: this.age,
             gender: this.gender,
             elderName: this.elderName,
-            // conventions: this.conventions == [] ? this.conventions.forEach(e => {e.JSONfy}) : [],
+            conventions: conventions,
         }
     }
 }
@@ -43,12 +63,14 @@ export class FormError {
 
 
 export class ConventionError {
-    daysSelected;
+    anyError;
+    daysAttending;
     people;
 
     constructor() {
-        this.daysSelected = null;
+        this.daysAttending = null;
         this.people = [];
+        this.anyError = false;
     }
 
     /**
@@ -69,16 +91,30 @@ export class ConventionError {
      * @returns true if any fields have input errors, false otherwise
      */
     doAnyError() {
-        if (this.daysSelected != null) return true;
-        for (let i = 0; i < this.people.length; i++) if (this.people[i].doAnyError()) return true;
+        this.anyError = true;
 
+        let error = false;
+        for (let i = 0; i < this.people.length; i++) if (this.people[i].doAnyError()) error = true;
+
+        if (error) return true;
+
+
+        if (this.daysAttending != null) return true;
+        
+
+        this.anyError = false;
         return false;
     }
 
     JSONfy() {
+        const people = [];
+        this.people.forEach(e => {
+            people.push(e.JSONfy());
+        });
         return {
-            daysSelected: this.daysSelected,
-            people: this.people == [] ? this.people.forEach(e => e.JSONfy) : [],
+            anyError: this.anyError,
+            daysAttending: this.daysAttending,
+            people: people,
         }
     }
 }
@@ -90,6 +126,7 @@ export class PeopleError {
     gender;
     preferredJob;
     accommodation;
+    anyError;
 
     constructor() {
         this.firstName = null;
@@ -98,6 +135,7 @@ export class PeopleError {
         this.gender = null;
         this.preferredJob = null;
         this.accommodation = null;
+        this.anyError = false;
     }
 
     /**
@@ -105,6 +143,8 @@ export class PeopleError {
      * @returns true if any fields have input errors, false otherwise
      */
     doAnyError() {
+        this.anyError = true;
+
         if (this.firstName != null) return true;
         if (this.lastName != null) return true;
         if (this.age != null) return true;
@@ -112,11 +152,13 @@ export class PeopleError {
         if (this.preferredJob != null) return true;
         if (this.accommodation != null) return true;
 
+        this.anyError = false;
         return false;
     }
 
     JSONfy() {
         return {
+            anyError: this.anyError,
             firstName: this.firstName,
             lastName: this.lastName,
             age: this.age,

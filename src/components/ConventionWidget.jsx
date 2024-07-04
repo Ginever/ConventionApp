@@ -12,13 +12,14 @@ import Divider from '@mui/material/Divider';
 import ConventionForm from './ConventionForm';
 import { useDispatch, useSelector } from 'react-redux';
 import { removeConvention, selectConventionData, selectFormError } from '../features/userData/userDataSlice';
+import { selectConventionError } from '../features/errorState/errorStateSlice';
+import { ConventionError } from '../utils/error';
 
 export default function ConventionWidget({index}) {
     const dispatch = useDispatch();
     const conventionName = useSelector(selectConventionData)[index].name;
     const [isSelected, setIsSelected] = React.useState(false);
-    const error = useSelector(selectFormError).getConventionError(index);
-
+    const error = useSelector(selectConventionError)[index] ?? new ConventionError();
 
     function handleClick() {
         setIsSelected(!isSelected);
@@ -27,10 +28,10 @@ export default function ConventionWidget({index}) {
     return (
         <ThemeProvider
             theme={createTheme()}>
-            <Box sx={{border: 1, borderRadius: '5px', borderColor: colorFromErrorState(error.doAnyError()), width: "max-width", height: "min-height"}}>
+            <Box sx={{border: 1, borderRadius: '5px', borderColor: colorFromErrorState(error.anyError), width: "max-width", height: "min-height"}}>
                 <Grid container onClick={handleClick}>
                     <Grid>
-                        <Typography color={error.doAnyError() ? "red" : "black"} sx={{ margin: "10px 20px", fontSize: "45px"}}>
+                        <Typography color={error.anyError ? "red" : "black"} sx={{ margin: "10px 20px", fontSize: "45px"}}>
                             <b>{conventionName}</b>
                         </Typography>
                     </Grid>

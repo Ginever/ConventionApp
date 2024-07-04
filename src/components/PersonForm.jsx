@@ -13,6 +13,8 @@ import { useDispatch, useSelector } from 'react-redux';
 import { removePerson, selectConventionData, selectFormError, selectPeople, updateGlobalPerson, updatePerson } from '../features/userData/userDataSlice';
 import HelpOutlineOutlinedIcon from '@mui/icons-material/HelpOutlineOutlined';
 import {genders, jobs, accommodations} from '../utils/datalists';
+import { ConventionError, PeopleError } from '../utils/error';
+import store from '../app/store';
 
 
 export default function PersonForm({uuid, conventionIndex, personIndex}) {
@@ -20,7 +22,10 @@ export default function PersonForm({uuid, conventionIndex, personIndex}) {
     const person = useSelector(selectPeople)[uuid];
     const personData = useSelector(selectConventionData)[conventionIndex].people[personIndex]; //I hate this but I can't think of a better way to access per convention user data
     const [isSelected, setIsSelected] = React.useState('');
-    const error = useSelector(selectFormError).getConventionError(conventionIndex).getPersonError(personIndex);
+
+
+    const conventionError = store.getState().errorState.conventions[conventionIndex] ?? new ConventionError();
+    const error = conventionError.people[personIndex] ?? new PeopleError();
 
     function handleClick() {
         setIsSelected(!isSelected);
@@ -30,7 +35,8 @@ export default function PersonForm({uuid, conventionIndex, personIndex}) {
         dispatch(updateGlobalPerson({uuid: uuid, field: event.target.name, change: event.target.value}))
     }
 
-    const handleChange = event => {    
+    const handleChange = event => {  
+        console.log(event);  
         dispatch(updatePerson({conventionIndex: conventionIndex, personIndex: personIndex, field: event.target.name, change: event.target.value}))
     }
 
@@ -41,11 +47,11 @@ export default function PersonForm({uuid, conventionIndex, personIndex}) {
     return (
         <ThemeProvider
             theme={createTheme()}>
-            <Box sx={{ border: 1, borderRadius: '5px', borderColor: colorFromErrorState(error.doAnyError()), width: "max-width", height: "min-height"}}>
+            <Box sx={{ border: 1, borderRadius: '5px', borderColor: colorFromErrorState(error.anyError), width: "max-width", height: "min-height"}}>
                 <Grid container onClick={handleClick}>
                     <Grid>
-                        <Typography color={error.doAnyError() ? "red" : "black"} sx={{ margin: "10px 20px", fontSize: "35px"}}>
-                            {person.firstName} {person.lastName}
+                        <Typography color={error.anyError ? "red" : "black"} sx={{ margin: "10px 20px", fontSize: "35px"}}>
+                            {person.firstName == "" && person.lastName == "" ? "Enter a name" : person.firstName + " " + person.lastName}
                         </Typography>
                     </Grid>
                     <Grid sx={{marginLeft: "auto", display: 'flex', alignItems: 'center'}}>
@@ -140,8 +146,8 @@ export default function PersonForm({uuid, conventionIndex, personIndex}) {
                                     labelId="job-selector-label"
                                     id="job-selector"
                                     name="job"
-                                    error={error.age != null}
-                                    value={personData.preferredJob  ?? ""}
+                                    error={error.preferredJob != null}
+                                    value={personData.job  ?? ""}
                                     label="Preferred Job"
                                     onChange={(e) => handleChange(e)}
                                 >
