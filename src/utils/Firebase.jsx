@@ -37,7 +37,8 @@ export async function createUserWithEmail(email, password){
 //Sign in Anonymously
 signInAnonymously(auth).then((value) => uid = value.user.uid, (err) => console.log(err));
 
-
+//! check this the internet went off
+//can I do data straight or do I need {}
 function writeUserData(data){
     console.log(data);
     setDoc(doc(db, 'users/', uid), data);
@@ -63,6 +64,7 @@ async function readRegistrationData(){
 export function writeConventionData(conventionName, data){
     console.log(data);
 
+    //! sort this out tomorrow
     data["isAnonymous"] 
 
     setDoc(doc(db, 'conventions/', conventionName, '/attendees/', uid), data);

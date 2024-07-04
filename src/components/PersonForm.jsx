@@ -15,6 +15,7 @@ import HelpOutlineOutlinedIcon from '@mui/icons-material/HelpOutlineOutlined';
 import {genders, jobs, accommodations} from '../utils/datalists';
 import { ConventionError, PeopleError } from '../utils/error';
 import store from '../app/store';
+import { clearPersonErrorState } from '../features/errorState/errorStateSlice';
 
 
 export default function PersonForm({uuid, conventionIndex, personIndex}) {
@@ -36,8 +37,15 @@ export default function PersonForm({uuid, conventionIndex, personIndex}) {
     }
 
     const handleChange = event => {  
-        console.log(event);  
+        console.log(event.target);
         dispatch(updatePerson({conventionIndex: conventionIndex, personIndex: personIndex, field: event.target.name, change: event.target.value}))
+    }
+
+    const handleErrorClear = event =>{
+        console.log(event.target); 
+        const payload = {conventionIndex: conventionIndex, personIndex: personIndex}
+        payload[event.target.name] = ""
+        dispatch(clearPersonErrorState(payload))
     }
 
     const handleDelete = () => {
@@ -85,6 +93,7 @@ export default function PersonForm({uuid, conventionIndex, personIndex}) {
                                 id="firstName" 
                                 value={person.firstName ?? ""} 
                                 onChange={(e) => handleGlobalChange(e)} 
+                                onClick={(e) => handleErrorClear(e)}
                             />
                         </Grid>
                         <Grid xs={12} md={6}>
@@ -100,6 +109,7 @@ export default function PersonForm({uuid, conventionIndex, personIndex}) {
                                 variant="outlined" 
                                 value={person.lastName ?? ""} 
                                 onChange={(e) => handleGlobalChange(e)}
+                                onClick={(e) => handleErrorClear(e)}
                             />
                         </Grid>
                         <Grid xs={12} md={6}>
@@ -115,11 +125,12 @@ export default function PersonForm({uuid, conventionIndex, personIndex}) {
                                 variant="outlined" 
                                 value={person.age  ?? ""} 
                                 onChange={(e) => handleGlobalChange(e)}
+                                onClick={(e) => handleErrorClear(e)}
                             />
                         </Grid>
                         <Grid xs={12} md={6}>
                             <FormControl fullWidth>
-                                <InputLabel error={error.gender != null} id="gender-selector-label">Gender</InputLabel>
+                                <InputLabel name="gender"  error={error.gender != null} id="gender-selector-label">Gender</InputLabel>
                                 <Select
                                     endAdornment={<HelpIcon helpText="Select your Gender" margin="0px 10px"/>}
                                     labelId="gender-selector-label"
@@ -128,7 +139,8 @@ export default function PersonForm({uuid, conventionIndex, personIndex}) {
                                     error={error.gender != null}
                                     value={person.gender  ?? ""}
                                     label="Gender"
-                                    onChange={(e) => handleGlobalChange(e)}
+                                    //? look at doing this with onClick instead of onChange - ran into issues with event.target returning html not a object
+                                    onChange={(e) => {handleErrorClear(e); handleChange(e);}}
                                 >
                                     {genders.map((gender) => (
                                     <MenuItem key={gender} value={gender}>{gender}</MenuItem>
@@ -149,7 +161,7 @@ export default function PersonForm({uuid, conventionIndex, personIndex}) {
                                     error={error.preferredJob != null}
                                     value={personData.job  ?? ""}
                                     label="Preferred Job"
-                                    onChange={(e) => handleChange(e)}
+                                    onChange={(e) => {handleErrorClear(e); handleChange(e);}}
                                 >
                                     {jobs.map((job) => (
                                         <MenuItem key={job} value={job}>{job}</MenuItem>
@@ -170,7 +182,7 @@ export default function PersonForm({uuid, conventionIndex, personIndex}) {
                                     error={error.accommodation != null}
                                     value={personData.accommodation  ?? ""}
                                     label="Accommodation"
-                                    onChange={(e) => handleChange(e)}
+                                    onChange={(e) => {handleErrorClear(e); handleChange(e);}}
                                 >
                                     {accommodations.map((accommodation) => (
                                         <MenuItem key={accommodation} value={accommodation}>{accommodation}</MenuItem>
