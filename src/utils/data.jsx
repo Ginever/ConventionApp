@@ -46,7 +46,8 @@ const userDataConverter = {
             firstName: userData.firstName,
             lastName: userData.lastName,
             age: userData.age,
-            gender: userData.gender
+            gender: userData.gender,
+            permissions: userData.permissions
         }
     },
     fromFirestore: (snapshot, options) => {
@@ -58,7 +59,8 @@ const userDataConverter = {
             firstName: data.firstName,
             lastName: data.lastName,
             age: data.age,
-            gender: data.gender
+            gender: data.gender,
+            permissions: data.permissions
             };
     }
 }

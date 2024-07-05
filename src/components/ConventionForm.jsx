@@ -98,6 +98,9 @@ export default function ConventionForm({index}) {
         >
             <Box sx={style}>
             <h1>Who else is attending {conventionData.name}?</h1>
+            <p style={{textAlign: "center"}}>This method of adding people is designed for use for parents to add children and children to add older parents quickly and easily. The people you add here will be listed with your contact information so</p>
+            <p style={{textAlign: "center"}}><b>YOU WILL BE RESPONSIBLE FOR CONTACTING THE PEOPLE YOU ADD HERE IF IT IS REQUIRED</b></p>
+            
             <ButtonGroup
             fullWidth
             orientation="vertical"
@@ -116,7 +119,7 @@ export default function ConventionForm({index}) {
                         width={1}
                     endIcon={<DeleteIcon onClick={() => {console.log("Clicked"); dispatch(deletePerson(uuid));}}/>} 
                 >
-                {people[person].firstName} {people[person].lastName}
+                    {people[person].firstName == "" && people[person].lastName == "" ? "Un-named" : people[person].firstName + " " + people[person].lastName}
                 </Button>
             ))}
             <Button onClick={() => {dispatch(createNewPerson(index)); handleClose()}}>
@@ -125,7 +128,6 @@ export default function ConventionForm({index}) {
             </ButtonGroup>
             </Box>
         </Modal>
-
         </Box>
     )
 }

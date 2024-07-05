@@ -9,6 +9,7 @@ import {
   createBrowserRouter,
   RouterProvider,
 } from "react-router-dom";
+import Register from './components/Register'
 
 const router = createBrowserRouter([
   {
@@ -23,6 +24,10 @@ const router = createBrowserRouter([
     path: "/ConventionApp/signUp",
     element: <SignUp />
   },
+  {
+    path: "/ConventionApp/register",
+    element: <Register />
+  }
 ]);
 
 ReactDOM.createRoot(document.getElementById("root")).render(

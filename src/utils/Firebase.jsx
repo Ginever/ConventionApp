@@ -24,7 +24,8 @@ const auth = getAuth(app);
 
 export var uid = null;
 
-export const isUserAuthed = () => uid != "";
+//TODO replace with isUserAnonymous
+export const isUserAuthed = () => uid != null;
 
 export async function signInWithEmail(email, password){
     await signInWithEmailAndPassword(auth, email, password).then((value) => {uid = value.user.uid; console.log(uid);});
@@ -48,6 +49,8 @@ async function readRegistrationData(){
     try {
         const docSnap = await getDoc(doc(db, 'users/', uid).withConverter(userDataConverter));
 
+        console.log(docSnap.data());
+
         if (docSnap.exists()){
             return docSnap.data();
         } else {
@@ -62,12 +65,13 @@ async function readRegistrationData(){
 }
 
 export function writeConventionData(conventionName, data){
+    console.log(conventionName);
     console.log(data);
 
     //! sort this out tomorrow
-    data["isAnonymous"] 
+    // data["isAnonymous"] 
 
-    setDoc(doc(db, 'conventions/', conventionName, '/attendees/', uid), data);
+    setDoc(doc(db, 'conventionData/','2024-2025/', conventionName, uid), data);
 }
 
 export { writeUserData, readRegistrationData };

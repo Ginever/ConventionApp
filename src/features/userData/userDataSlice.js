@@ -12,6 +12,7 @@ const initialState = {
     age: "",
     gender: "",
     timeRange: getInitialTimeRange(),
+    permissions: {allowedAccess: [], level: 0}
 }
 
 function getInitialTimeRange() {
@@ -24,7 +25,7 @@ function getInitialTimeRange() {
 }
 
 export const updateDataAsync = () => {
-    return async (dispatch, getState) => {
+    return async (dispatch) => {
         const data = await readRegistrationData();
 
         if (data != null){
@@ -39,15 +40,16 @@ export const userDataSlice = createSlice({
     initialState,
     reducers : {
         dataLoaded: (state, action) => {
-            console.log(action.payload);
+            console.log(state.permissions);
             state.conventions = action.payload.conventions ?? [];
-            state.people = action.payload.people ?? [];
+            state.people = action.payload.people ?? {};
             state.elderName = action.payload.elderName ?? "";
             state.firstName = action.payload.firstName ?? "";
             state.lastName = action.payload.lastName ?? "";
             state.age = action.payload.age ?? "";
             state.gender = action.payload.gender ?? "";
-            console.log(state);
+            state.permissions = action.payload.permissions ?? {allowedAccess: [], level: 0};
+            console.log(state.permissions);
         },
         updateFirstName: (state, action) => {
             state.firstName = action.payload;
@@ -88,6 +90,7 @@ export const userDataSlice = createSlice({
               });
         },
         createNewPerson: (state, action) => {
+            console.log(state.people);
             const uuid = uuidv4();
             state.people[uuid] = {
                 age: null,
@@ -100,6 +103,7 @@ export const userDataSlice = createSlice({
                 job: "",
                 uuid: uuid
             })
+            console.log(state.people);
         },
         addNewPerson: (state, action) => {
             state.conventions[action.payload.conventionIndex].people.push({
@@ -172,5 +176,6 @@ export const selectLastName = state => state.userData.lastName;
 export const selectAge = state => state.userData.age;
 export const selectGender = state => state.userData.gender;
 export const selectFormError = state => state.userData.error;
+export const selectPermissions = state => state.userData.permissions;
 
 export default userDataSlice.reducer;

@@ -29,20 +29,22 @@ export const errorStateSlice = createSlice({
             if (action.payload.elderName != null) state.elderName = null;
         },
         clearConventionErrorState: (state, action) => {
-            console.log(action.payload);
             state.conventions[action.payload.index].anyError = false;
             if (state.conventions[action.payload.index].daysAttending != null) state.conventions[action.payload.index].daysAttending = null;
         },
         clearPersonErrorState: (state, action) => {
-            console.log(action.payload);
-            state.conventions[action.payload.conventionIndex].anyError = false;
-            state.conventions[action.payload.conventionIndex].people[action.payload.personIndex].anyError = false;
-            if (action.payload.firstName != null) state.conventions[action.payload.conventionIndex].people[action.payload.personIndex].firstName = null;
-            if (action.payload.lastName != null) state.conventions[action.payload.conventionIndex].people[action.payload.personIndex].lastName = null;
-            if (action.payload.age != null) state.conventions[action.payload.conventionIndex].people[action.payload.personIndex].age = null;
-            if (action.payload.gender != null) state.conventions[action.payload.conventionIndex].people[action.payload.personIndex].gender = null;
-            if (action.payload.job != null) state.conventions[action.payload.conventionIndex].people[action.payload.personIndex].preferredJob = null;
-            if (action.payload.accommodation != null) state.conventions[action.payload.conventionIndex].people[action.payload.personIndex].accommodation = null;
+            console.log('hi');
+            if (state.conventions[action.payload.conventionIndex] != null){
+                state.conventions[action.payload.conventionIndex].anyError = false;
+                state.conventions[action.payload.conventionIndex].people[action.payload.personIndex].anyError = false;
+                if (action.payload.firstName != null) state.conventions[action.payload.conventionIndex].people[action.payload.personIndex].firstName = null;
+                if (action.payload.lastName != null) state.conventions[action.payload.conventionIndex].people[action.payload.personIndex].lastName = null;
+                if (action.payload.age != null) state.conventions[action.payload.conventionIndex].people[action.payload.personIndex].age = null;
+                if (action.payload.gender != null) state.conventions[action.payload.conventionIndex].people[action.payload.personIndex].gender = null;
+                if (action.payload.job != null) state.conventions[action.payload.conventionIndex].people[action.payload.personIndex].preferredJob = null;
+                if (action.payload.accommodation != null) state.conventions[action.payload.conventionIndex].people[action.payload.personIndex].accommodation = null;
+            }
+            console.log("bye");
         }
     }
 

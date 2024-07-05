@@ -37,7 +37,6 @@ export default function PersonForm({uuid, conventionIndex, personIndex}) {
     }
 
     const handleChange = event => {  
-        console.log(event.target);
         dispatch(updatePerson({conventionIndex: conventionIndex, personIndex: personIndex, field: event.target.name, change: event.target.value}))
     }
 
@@ -58,7 +57,7 @@ export default function PersonForm({uuid, conventionIndex, personIndex}) {
             <Box sx={{ border: 1, borderRadius: '5px', borderColor: colorFromErrorState(error.anyError), width: "max-width", height: "min-height"}}>
                 <Grid container onClick={handleClick}>
                     <Grid>
-                        <Typography color={error.anyError ? "red" : "black"} sx={{ margin: "10px 20px", fontSize: "35px"}}>
+                        <Typography color={error.anyError ? "red" : "black"} sx={{ margin: "10px 20px", fontSize: "35px", whiteSpace: "nowrap", overflow: "hidden"}}>
                             {person.firstName == "" && person.lastName == "" ? "Enter a name" : person.firstName + " " + person.lastName}
                         </Typography>
                     </Grid>
@@ -140,7 +139,7 @@ export default function PersonForm({uuid, conventionIndex, personIndex}) {
                                     value={person.gender  ?? ""}
                                     label="Gender"
                                     //? look at doing this with onClick instead of onChange - ran into issues with event.target returning html not a object
-                                    onChange={(e) => {handleErrorClear(e); handleChange(e);}}
+                                    onChange={(e) => {handleErrorClear(e); handleGlobalChange(e);}}
                                 >
                                     {genders.map((gender) => (
                                     <MenuItem key={gender} value={gender}>{gender}</MenuItem>

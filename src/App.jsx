@@ -15,6 +15,7 @@ import store from './app/store';
 import { checkWholeForm, formatAndSendConventionData } from './utils/errorChecking';
 import { clearErrorState, selectElderNameError } from './features/errorState/errorStateSlice';
 import { writeConventionData } from './utils/Firebase';
+import { Opacity } from '@mui/icons-material';
 
 
 const style = {
@@ -57,6 +58,13 @@ function App() {
   return (
     <div>
       <ResponsiveAppBar />
+      <Box style={{margin: "1%", border: "3px solid green"}}>
+        <Box opacity="60%" style={{backgroundColor: "lightgreen", height: "100%", padding: "10px"}}>
+          <p style={{margin: 0, opacity: "100%", textAlign: "center"}}>This form is currently in development so expect bugs and occasional loss of entered data!!!!</p>
+          <p style={{margin: 0, opacity: "100%", textAlign: "center"}}>The code is open source and can be found <a href="https://github.com/Ginever/ConventionApp" target="_blank">here</a> if you feel the urge to fix my code or UX/UI yourself.</p>
+          <p style={{margin: 0, opacity: "100%", textAlign: "center"}}>If you come across any peculiar behavior, bugs or just have a suggestion please raise a github issue <a href='https://github.com/Ginever/ConventionApp/issues'>here</a> and someone (or you☺) will see it and hopefully fix it.</p>
+        </Box>
+      </Box>
       <h1>Convention form</h1>
       <Grid container spacing={2} padding="0px 2.5%">
         <Grid item xs={12}>

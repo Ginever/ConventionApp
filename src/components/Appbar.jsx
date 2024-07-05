@@ -20,7 +20,7 @@ import { useDispatch, useSelector } from 'react-redux';
 
 const theme = createTheme();
 
-const pages = ['Register', 'Log In/Sign up'];
+const pages = ['Register', 'Log In/Sign up', 'Register People'];
 const settings = ['Personal Information', 'About the App', 'Logout'];
 const startTime = new Date(2021, 4);
 const currentTime = new Date();
@@ -51,6 +51,9 @@ function ResponsiveAppBar() {
         break;
       case pages[1]:
         navigate("/ConventionApp/signIn");
+        break;
+      case pages[2]:
+        navigate("/ConventionApp/register");
         break;
     }
     setAnchorElNav(null);
