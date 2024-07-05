@@ -1,7 +1,7 @@
 import { doc, setDoc} from "firebase/firestore"; 
 import { v4 as uuidv4 } from 'uuid';
 import { createSlice } from "@reduxjs/toolkit";
-import { readRegistrationData, writeUserData } from "../../utils/Firebase";
+import { readUserData, writeUserData } from "../../utils/Firebase";
 
 const initialState = {
     conventions: [],
@@ -12,7 +12,7 @@ const initialState = {
     age: "",
     gender: "",
     timeRange: getInitialTimeRange(),
-    permissions: {allowedAccess: [], level: 0}
+    permissions: {allowedAccess: ["1st puke", "1st master"], level: 1}
 }
 
 function getInitialTimeRange() {
@@ -26,7 +26,7 @@ function getInitialTimeRange() {
 
 export const updateDataAsync = () => {
     return async (dispatch) => {
-        const data = await readRegistrationData();
+        const data = await readUserData();
 
         if (data != null){
             dispatch(dataLoaded(data));

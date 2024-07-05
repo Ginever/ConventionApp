@@ -13,7 +13,7 @@ import { useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { Backdrop, CircularProgress } from '@mui/material';
 import { updateDataAsync } from '../features/userData/userDataSlice';
-import { signInWithEmail, uid } from '../utils/Firebase';
+import { signInWithEmail } from '../utils/Firebase';
 
 function Copyright(props) {
   return (

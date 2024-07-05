@@ -22,32 +22,32 @@ initializeFirestore(app, {localCache: persistentLocalCache(/*settings*/{})});
 const db = getFirestore(app);
 const auth = getAuth(app);
 
-export var uid = null;
+export var user = null;
 
 //TODO replace with isUserAnonymous
-export const isUserAuthed = () => uid != null;
+export const isUserAuthed = () => user != null ? user.isAnonymous : false;
 
 export async function signInWithEmail(email, password){
-    await signInWithEmailAndPassword(auth, email, password).then((value) => {uid = value.user.uid; console.log(uid);});
+    await signInWithEmailAndPassword(auth, email, password).then((value) => {user = value.user; console.log(user);});
 }
 
 export async function createUserWithEmail(email, password){
-    await createUserWithEmailAndPassword(auth, email, password).then((value) => uid = value.user.uid);
+    await createUserWithEmailAndPassword(auth, email, password).then((value) => user = value.user);
 }
 
 //Sign in Anonymously
-signInAnonymously(auth).then((value) => uid = value.user.uid, (err) => console.log(err));
+signInAnonymously(auth).then((value) => user = value.user, (err) => console.log(err));
 
 //! check this the internet went off
 //can I do data straight or do I need {}
 function writeUserData(data){
     console.log(data);
-    setDoc(doc(db, 'users/', uid), data);
+    setDoc(doc(db, 'users/', user.uid), data);
 }
 
-async function readRegistrationData(){
+async function readUserData(){
     try {
-        const docSnap = await getDoc(doc(db, 'users/', uid).withConverter(userDataConverter));
+        const docSnap = await getDoc(doc(db, 'users/', user.uid).withConverter(userDataConverter));
 
         console.log(docSnap.data());
 
@@ -64,6 +64,10 @@ async function readRegistrationData(){
     }
 }
 
+export async function readRegistrationData(conventionName){
+    getDoc(doc(db, 'conventionData/','2024-2025/', conventionName));
+}
+
 export function writeConventionData(conventionName, data){
     console.log(conventionName);
     console.log(data);
@@ -71,7 +75,7 @@ export function writeConventionData(conventionName, data){
     //! sort this out tomorrow
     // data["isAnonymous"] 
 
-    setDoc(doc(db, 'conventionData/','2024-2025/', conventionName, uid), data);
+    setDoc(doc(db, 'conventionData/','2024-2025/', conventionName, user.uid), data);
 }
 
-export { writeUserData, readRegistrationData };
+export { writeUserData, readUserData };

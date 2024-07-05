@@ -9,7 +9,7 @@ import {
   createBrowserRouter,
   RouterProvider,
 } from "react-router-dom";
-import Register from './components/Register'
+import Register from './components/register/Register'
 
 const router = createBrowserRouter([
   {
