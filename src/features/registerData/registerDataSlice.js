@@ -1,12 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 const initialState ={
-    "1st puke": [{
-        name: 'Hello'
-    },
-    {
-        name: 'World'
-    }],
 }
 
 export const registerDataSlice = createSlice({
@@ -14,8 +8,9 @@ export const registerDataSlice = createSlice({
     initialState,
     reducers : {
         addRegistrationData: (state, action) => {
-            state = action.payload;
-        },
+            console.log(action.payload.conventionName);
+            state[action.payload.conventionName] = action.payload.data;
+        }, 
     }
 })
 

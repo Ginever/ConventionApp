@@ -1,8 +1,9 @@
 import { initializeApp  } from "firebase/app";
-import { doc, setDoc, getDoc, getFirestore, initializeFirestore, persistentLocalCache } from "firebase/firestore"; 
+import { doc, setDoc, getDoc, getFirestore, initializeFirestore, persistentLocalCache, query, collection, where, getDocs } from "firebase/firestore"; 
 import { userDataConverter } from './data'
 import { getAuth, signInAnonymously, signInWithEmailAndPassword } from "firebase/auth";
 import { LastPage } from "@mui/icons-material";
+import { addRegistrationData } from "../features/registerData/registerDataSlice";
 
 // Your web app's Firebase configuration
 const firebaseConfig = {
@@ -16,7 +17,6 @@ const firebaseConfig = {
 };
   
 // Initialize Firebase
-//This is being done in two places and is bad coding but I can't be asked to fix it now (userDataSlice.js)
 const app = initializeApp(firebaseConfig);
 initializeFirestore(app, {localCache: persistentLocalCache(/*settings*/{})});
 const db = getFirestore(app);
@@ -24,7 +24,6 @@ const auth = getAuth(app);
 
 export var user = null;
 
-//TODO replace with isUserAnonymous
 export const isUserAuthed = () => user != null ? user.isAnonymous : false;
 
 export async function signInWithEmail(email, password){
@@ -38,8 +37,6 @@ export async function createUserWithEmail(email, password){
 //Sign in Anonymously
 signInAnonymously(auth).then((value) => user = value.user, (err) => console.log(err));
 
-//! check this the internet went off
-//can I do data straight or do I need {}
 function writeUserData(data){
     console.log(data);
     setDoc(doc(db, 'users/', user.uid), data);
@@ -64,18 +61,21 @@ async function readUserData(){
     }
 }
 
-export async function readRegistrationData(conventionName){
-    getDoc(doc(db, 'conventionData/','2024-2025/', conventionName));
+export const readRegistrationData = (conventionName, day) => async dispatch => {
+    const querySnapshot = await getDocs(query(collection(db, 'conventionData/','2024-2025/', conventionName), 
+    where("daysAttending", "array-contains", day)));
+    const conventionUserData = [];
+    querySnapshot.forEach((doc) => conventionUserData.push(doc.data()));
+
+    console.log(conventionUserData);
+
+    dispatch(addRegistrationData({conventionName: conventionName, data: conventionUserData}));
 }
 
 export function writeConventionData(conventionName, data){
-    console.log(conventionName);
-    console.log(data);
+    data["isAnonymous"] = user.isAnonymous;
 
-    //! sort this out tomorrow
-    // data["isAnonymous"] 
-
-    setDoc(doc(db, 'conventionData/','2024-2025/', conventionName, user.uid), data);
+    setDoc(doc(db, 'conventionData/','2024-2025/', conventionName, user.uid), data).then((e) => console.log(e), (err) => console.log(err));
 }
 
 export { writeUserData, readUserData };

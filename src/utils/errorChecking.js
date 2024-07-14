@@ -55,7 +55,8 @@ export function formatAndSendConventionData() {
         writeConventionData(convention.name, {
             firstName: state.firstName,
             lastName: state.lastName,
-            elderName: state.elderName
+            elderName: state.elderName,
+            daysAttending: convention.daysAttending,
         });
     }
 }

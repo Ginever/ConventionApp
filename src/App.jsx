@@ -113,7 +113,7 @@ function App() {
         <Grid item xs={12}>
           <Tooltip title="Submit your information to convention managers">
             <span>
-              <Button onClick={() => {if (checkWholeForm(dispatch)) formatAndSendConventionData()} } sx={{ border: 1, borderRadius: '5px', width: "100%", display: "flex", justifyContent: "center", alignItems: "center"}}>
+              <Button onClick={() => {/*if (checkWholeForm(dispatch))*/ formatAndSendConventionData()} } sx={{ border: 1, borderRadius: '5px', width: "100%", display: "flex", justifyContent: "center", alignItems: "center"}}>
                   Submit
               </Button>
             </span>

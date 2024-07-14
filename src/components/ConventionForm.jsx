@@ -14,7 +14,8 @@ import { Button, ButtonGroup, IconButton, Modal } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import store from '../app/store';
 import { ConventionError } from '../utils/error';
-import { clearConventionErrorState, clearErrorState } from '../features/errorState/errorStateSlice';
+import { clearConventionErrorState } from '../features/errorState/errorStateSlice';
+import { conventionDays } from '../utils/datalists';
 
 
 const style = {
@@ -29,8 +30,6 @@ const style = {
     boxShadow: 24,
     p: 4,
 };
-
-const conventionDays = ["Thursday", "Friday", "Saturday", "Sunday", "Monday"]
 
 export default function ConventionForm({index}) {
     const dispatch = useDispatch();
